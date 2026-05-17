@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SteelIQ — Brand Mark System</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=Instrument+Serif:ital@0;1&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  html,body{margin:0;padding:0;height:100%;background:#0a0f1c;font-family:'Space Grotesk',sans-serif}
+  *{box-sizing:border-box}
+  .lg-light{background:#fafbfd}
+  .lg-dark{background:linear-gradient(180deg,#0b1120,#070b14)}
+  .lg-warm{background:linear-gradient(135deg,#1a1226,#0b0a1a)}
+  .lg-stage{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:18px;position:relative}
+  .lg-label{position:absolute;top:14px;left:18px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(140,160,200,0.65)}
+  .lg-label.dark{color:rgba(20,40,100,0.45)}
+  .lg-note{font-size:11px;color:#7a8aac;text-align:center;max-width:90%;line-height:1.5}
+  .lg-note.dark{color:#5a6a8a}
+  .lg-row{display:flex;align-items:center;gap:24px;justify-content:center}
+  .lg-col{display:flex;flex-direction:column;align-items:center;gap:8px}
+  .lg-size-cap{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(140,160,200,0.6);letter-spacing:.5px}
+  .lg-size-cap.dark{color:rgba(20,40,100,0.5)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="steeliq-logo-marks.jsx"></script>
+
+<script type="text/babel">
+const { useState } = React;
+
+function LogoBoard() {
+  return (
+    <DesignCanvas>
+      {/* ──────── PRIMARY MARK ──────── */}
+      <DCSection id="primary" title="Primary Mark" subtitle="The SteelIQ brand symbol — a steel-blue crucible containing a molten Q. Steel + IQ + Industrial AI in one geometric mark.">
+        <DCArtboard id="hero-dark" label="On Dark — Hero" width={480} height={480}>
+          <div className="lg-stage lg-dark">
+            <div className="lg-label">Primary</div>
+            <SteelIQMark size={300}/>
+            <div className="lg-note">The Crucible Q — molten steel meets intelligence</div>
+          </div>
+        </DCArtboard>
+
+        <DCArtboard id="hero-light" label="On Light" width={480} height={480}>
+          <div className="lg-stage lg-light">
+            <div className="lg-label dark">Primary</div>
+            <SteelIQMark size={300}/>
+            <div className="lg-note dark">Clean version for white backgrounds</div>
+          </div>
+        </DCArtboard>
+
+        <DCArtboard id="scale" label="Size Scale" width={720} height={300}>
+          <div className="lg-stage lg-light">
+            <div className="lg-label dark">Scale</div>
+            <div className="lg-row" style={{ alignItems: 'flex-end', gap: 36 }}>
+              {[24, 40, 64, 96, 160].map(s => (
+                <div key={s} className="lg-col">
+                  <SteelIQMark size={s}/>
+                  <div className="lg-size-cap dark">{s}px</div>
+                </div>
+              ))}
+            </div>
+            <div className="lg-note dark">Mark holds form from favicon to billboard</div>
+          </div>
+        </DCArtboard>
+      </DCSection>
+
+      {/* ──────── WORDMARK LOCKUPS ──────── */}
+      <DCSection id="lockups" title="Wordmark Lockups" subtitle="Steel = Space Grotesk Bold. IQ = Instrument Serif italic, the editorial accent. Three standard lockups.">
+        <DCArtboard id="lock-h" label="Horizontal · Primary" width={680} height={260}>
+          <div className="lg-stage lg-light">
+            <div className="lg-label dark">Horizontal lockup</div>
+            <SteelIQLockup variant="horizontal" theme="light" size={1.4}/>
+            <div className="lg-note dark">Default lockup for headers, hero, marketing</div>
+          </div>
+        </DCArtboard>
+
+        <DCArtboard id="lock-h-dark" label="Horizontal · Dark" width={680} height={260}>
+          <div className="lg-stage lg-dark">
+            <div className="lg-label">Reversed</div>
+            <SteelIQLockup variant="horizontal" theme="dark" size={1.4}/>
+            <div className="lg-note">For dark UI, footers, badges</div>
+          </div>
+        </DCArtboard>
+
+        <DCArtboard id="lock-stacked" label="Stacked · Vertical" width={400} height={420}>
+          <div className="lg-stage lg-light">
+            <div className="lg-label dark">Stacked</div>
+            <SteelIQLockup variant="stacked" theme="light" size={1.4}/>
+            <div className="lg-note dark">Square contexts, app store, social</div>
+          </div>
+        </DCArtboard>
+
+        <DCArtboard id="lock-tagline" label="With Tagline" width={680} height={300}>
+          <div className="lg-stage lg-light">
+            <div className="lg-label dark">Tagline lockup</div>
+            <SteelIQLockup variant="horizontal" theme="light" size={1.4} tagline="Industrial AI for Steel Manufacturing"/>
+            <div className="lg-note dark">For pitches, decks, capabilities pages</div>
+          </div>
+        </DCArtboard>
+
+        <DCArtboard id="lock-word" label="Wordmark Only" width={520} height={220}>
+          <div className="lg-stage lg-light">
+            <div className="lg-label dark">Wordmark</div>
+            <SteelIQWordmark theme="light" size={1.8}/>
+            <div className="lg-note dark">When the mark is already established in context</div>
+          </div>
+        </DCArtboard>
+      </DCSection>
+
+      {/* ──────── COLOR VARIANTS ──────── */}
+      <DCSection id="variants" title="Color Variants" subtitle="The brand carries four tonal expressions — full-color, monochrome dark, monochrome light, and the warm signature variant.">
+        <DCArtboard id="var-full" label="A · Full Color (Default)" width={320} height={320}>
+          <div className="lg-stage lg-light">
+            <SteelIQMark size={200} variant="full"/>
+          </div>
+        </DCArtboard>
+        <DCArtboard id="var-mono-dark" label="B · Mono · Steel" width={320} height={320}>
+          <div className="lg-stage lg-light">
+            <SteelIQMark size={200} variant="mono-dark"/>
+          </div>
+        </DCArtboard>
+        <DCArtboard id="var-mono-light" label="C · Mono · Reversed" width={320} height={320}>
+          <div className="lg-stage lg-dark">
+            <SteelIQMark size={200} variant="mono-light"/>
+          </div>
+        </DCArtboard>
+        <DCArtboard id="var-warm" label="D · Warm · Molten" width={320} height={320}>
+          <div className="lg-stage lg-warm">
+            <SteelIQMark size={200} variant="warm"/>
+          </div>
+        </DCArtboard>
+      </DCSection>
+
+      {/* ──────── ALTERNATIVE CONCEPTS ──────── */}
+      <DCSection id="alts" title="Alternative Concepts" subtitle="Three further directions in case the primary doesn't resonate. Each carries its own metaphor.">
+        <DCArtboard id="alt-strand" label="Concept B · Strand Stack" width={360} height={420}>
+          <div className="lg-stage lg-light">
+            <div className="lg-label dark">B · Strand Stack</div>
+            <AltStrand size={200}/>
+            <div className="lg-note dark"><strong>Continuous casting strands</strong> + intelligence node above. Reads as process orchestration.</div>
+          </div>
+        </DCArtboard>
+
+        <DCArtboard id="alt-pulse" label="Concept C · Pulse Beam" width={360} height={420}>
+          <div className="lg-stage lg-light">
+            <div className="lg-label dark">C · Pulse Beam</div>
+            <AltPulse size={200}/>
+            <div className="lg-note dark"><strong>Steel I-beam</strong> with a live data pulse running through it. Industrial + signal in one shape.</div>
+          </div>
+        </DCArtboard>
+
+        <DCArtboard id="alt-hex" label="Concept D · Hex Crystal" width={360} height={420}>
+          <div className="lg-stage lg-light">
+            <div className="lg-label dark">D · Hex Crystal</div>
+            <AltHex size={200}/>
+            <div className="lg-note dark"><strong>Steel crystal lattice</strong> with an inset Q. Material-science meets data nodes.</div>
+          </div>
+        </DCArtboard>
+      </DCSection>
+
+      {/* ──────── USAGE EXAMPLES ──────── */}
+      <DCSection id="usage" title="In Context" subtitle="The mark in real-world contexts — browser tab, app icon, command-center header.">
+        <DCArtboard id="ctx-favicon" label="Browser Tab" width={560} height={120}>
+          <div className="lg-stage lg-light" style={{ justifyContent: 'flex-start', padding: '14px 20px' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-end', gap: 0, width: '100%' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', background: '#fff', border: '1px solid #ddd', borderBottom: 'none', borderRadius: '8px 8px 0 0', boxShadow: '0 -2px 8px rgba(0,0,0,0.04)' }}>
+                <SteelIQMark size={16}/>
+                <span style={{ fontSize: 12, color: '#1a2540', fontWeight: 500 }}>SteelIQ — Command Center</span>
+                <span style={{ color: '#aaa', marginLeft: 12, cursor: 'pointer' }}>×</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', background: '#eef1f7', border: '1px solid #ddd', borderBottom: 'none', borderRadius: '8px 8px 0 0', opacity: .7 }}>
+                <span style={{ width: 16, height: 16, background: '#bbb', borderRadius: 2 }}/>
+                <span style={{ fontSize: 12, color: '#666' }}>Another tab</span>
+              </div>
+            </div>
+            <div style={{ width: '100%', height: 2, background: '#ddd' }}/>
+          </div>
+        </DCArtboard>
+
+        <DCArtboard id="ctx-app-icon" label="App Icon · iOS Style" width={300} height={300}>
+          <div className="lg-stage" style={{ background: 'linear-gradient(135deg,#e5e7eb,#cbd5e1)' }}>
+            <div style={{ width: 180, height: 180, borderRadius: 42, overflow: 'hidden', boxShadow: '0 14px 40px rgba(0,0,0,0.25)' }}>
+              <SteelIQMark size={180} cornerRadius={0}/>
+            </div>
+            <div className="lg-size-cap dark" style={{ marginTop: 4 }}>SteelIQ</div>
+          </div>
+        </DCArtboard>
+
+        <DCArtboard id="ctx-header" label="App Header" width={680} height={160}>
+          <div className="lg-stage lg-light" style={{ justifyContent: 'flex-start', padding: 0 }}>
+            <div style={{ width: '100%', height: 56, background: '#fff', borderBottom: '1px solid #e5eaf2', display: 'flex', alignItems: 'center', padding: '0 20px', gap: 14 }}>
+              <SteelIQMark size={32}/>
+              <SteelIQWordmark theme="light" size={0.9}/>
+              <div style={{ flex: 1 }}/>
+              <div style={{ fontSize: 11, color: '#7a8aac', letterSpacing: 1, textTransform: 'uppercase', fontWeight: 600 }}>v3.2.0</div>
+              <button style={{ padding: '6px 14px', borderRadius: 7, background: 'linear-gradient(135deg,#3a78ff,#1f4ed8)', color: '#fff', border: 'none', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'Space Grotesk' }}>Login</button>
+            </div>
+            <div style={{ padding: '20px 20px 0', width: '100%', fontSize: 11, color: '#7a8aac' }}>↑ Same lockup that appears across the product UI</div>
+          </div>
+        </DCArtboard>
+
+        <DCArtboard id="ctx-hero" label="Marketing Hero" width={680} height={300}>
+          <div className="lg-stage lg-dark" style={{ background: 'radial-gradient(ellipse at 70% 30%, rgba(50,110,255,0.15), #070b14)' }}>
+            <SteelIQLockup variant="horizontal" theme="dark" size={1.7}/>
+            <div style={{ fontSize: 13, color: '#7a8aac', textAlign: 'center', maxWidth: '90%', marginTop: 6, lineHeight: 1.6 }}>
+              Industrial AI for the next era of <em style={{ fontFamily: 'Instrument Serif', fontStyle: 'italic', color: '#7aa0ff', fontSize: 14 }}>steel manufacturing</em>
+            </div>
+          </div>
+        </DCArtboard>
+      </DCSection>
+
+      {/* ──────── BRAND TOKENS ──────── */}
+      <DCSection id="tokens" title="Brand Tokens" subtitle="The palette, typography, and minimum dimensions that keep the mark consistent everywhere it appears.">
+        <DCArtboard id="palette" label="Color Palette" width={560} height={340}>
+          <div className="lg-stage lg-light" style={{ alignItems: 'stretch', padding: 24 }}>
+            <div className="lg-label dark">Brand Palette</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12, marginTop: 22 }}>
+              {[
+                { l: 'Steel Midnight', v: '#0b1120', sub: 'Primary dark · containers' },
+                { l: 'Cobalt Spark', v: '#3a78ff', sub: 'Brand blue · interactive' },
+                { l: 'Molten Gold', v: '#ffd166', sub: 'Spark · highlights' },
+                { l: 'Molten Orange', v: '#ff6a2d', sub: 'Industry warmth · CTA' },
+                { l: 'Iris Ion', v: '#a060ff', sub: 'AI accent · NLP layer' },
+                { l: 'Off-White', v: '#fafbfd', sub: 'Light backgrounds' },
+              ].map(c => (
+                <div key={c.l} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div style={{ width: 38, height: 38, borderRadius: 8, background: c.v, border: '1px solid rgba(20,40,100,0.08)', flexShrink: 0, boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.15)' }}/>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: '#1a2540' }}>{c.l}</div>
+                    <div style={{ fontFamily: 'JetBrains Mono', fontSize: 10, color: '#7a8aac' }}>{c.v}</div>
+                    <div style={{ fontSize: 10, color: '#7a8aac', marginTop: 2 }}>{c.sub}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </DCArtboard>
+
+        <DCArtboard id="typography" label="Typography" width={560} height={340}>
+          <div className="lg-stage lg-light" style={{ alignItems: 'flex-start', justifyContent: 'flex-start', padding: 24, gap: 20 }}>
+            <div className="lg-label dark">Typography</div>
+            <div style={{ marginTop: 14, width: '100%' }}>
+              <div style={{ fontSize: 9, color: '#7a8aac', letterSpacing: 1.5, fontWeight: 700, marginBottom: 4 }}>DISPLAY · SANS</div>
+              <div style={{ fontFamily: 'Space Grotesk', fontWeight: 700, fontSize: 32, color: '#0b1120', letterSpacing: -1 }}>Space Grotesk</div>
+              <div style={{ fontSize: 11, color: '#7a8aac', fontFamily: 'JetBrains Mono', marginTop: 2 }}>400, 500, 600, 700</div>
+            </div>
+            <div style={{ width: '100%' }}>
+              <div style={{ fontSize: 9, color: '#7a8aac', letterSpacing: 1.5, fontWeight: 700, marginBottom: 4 }}>EDITORIAL · ITALIC ACCENT</div>
+              <div style={{ fontFamily: 'Instrument Serif', fontStyle: 'italic', fontWeight: 400, fontSize: 36, color: '#0b1120', letterSpacing: -.5 }}>Instrument Serif</div>
+              <div style={{ fontSize: 11, color: '#7a8aac', fontFamily: 'JetBrains Mono', marginTop: 2 }}>Italic only · for emphasis words</div>
+            </div>
+            <div style={{ width: '100%' }}>
+              <div style={{ fontSize: 9, color: '#7a8aac', letterSpacing: 1.5, fontWeight: 700, marginBottom: 4 }}>NUMERIC · MONO</div>
+              <div style={{ fontFamily: 'JetBrains Mono', fontWeight: 600, fontSize: 22, color: '#0b1120' }}>JetBrains Mono · 19 kWh/hr</div>
+            </div>
+          </div>
+        </DCArtboard>
+
+        <DCArtboard id="clearspace" label="Clear Space · Min Size" width={420} height={340}>
+          <div className="lg-stage lg-light" style={{ padding: 24 }}>
+            <div className="lg-label dark">Clear space</div>
+            <div style={{ position: 'relative', padding: 24, border: '1px dashed #7a8aac', borderRadius: 6 }}>
+              <SteelIQMark size={120}/>
+              <div style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: '#fafbfd', padding: '0 6px', fontFamily: 'JetBrains Mono', fontSize: 10, color: '#7a8aac' }}>≥ 0.5× mark height</div>
+            </div>
+            <div className="lg-row" style={{ gap: 20, marginTop: 12 }}>
+              <div className="lg-col">
+                <SteelIQMark size={16}/>
+                <div className="lg-size-cap dark">16px · favicon min</div>
+              </div>
+              <div className="lg-col">
+                <SteelIQMark size={32}/>
+                <div className="lg-size-cap dark">32px · UI min</div>
+              </div>
+            </div>
+          </div>
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<LogoBoard/>);
+</script>
+</body>
+</html>

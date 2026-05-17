@@ -1,0 +1,1995 @@
+<!DOCTYPE html><html lang="en"><head>
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SteelIQ — Emirates Steel</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#060a12;--bg2:#0b1120;--bg3:#111928;--bg4:#161f30;
+  --border:rgba(80,130,255,0.11);--border2:rgba(80,130,255,0.22);
+  --blue:oklch(65% 0.22 248deg);--blue-lo:rgba(50,110,255,0.12);
+  --amber:oklch(72% 0.19 65deg);--amber-lo:rgba(255,165,40,0.1);
+  --green:oklch(68% 0.18 155deg);--green-lo:rgba(50,200,110,0.1);
+  --purple:oklch(70% 0.2 290deg);--purple-lo:rgba(160,80,255,0.1);
+  --red:oklch(62% 0.22 25deg);--red-lo:rgba(255,50,50,0.1);
+  --text:#e8edf8;--text-dim:#5a6a8a;--text-mid:#8a9bbf;
+  --mono:'JetBrains Mono',monospace;--sans:'Space Grotesk',sans-serif;
+  --header-h:56px;--sb-open:230px;--sb-closed:54px;
+  --radius:10px;--radius-sm:7px;
+}
+html,body,#root{height:100%;width:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--sans)}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(50,100,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(50,100,255,0.025) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:3px;height:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(80,130,255,0.2);border-radius:2px}
+
+/* ── LOGIN ── */
+.login-page{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:100;overflow:hidden}
+.login-bg{position:absolute;inset:0;background:url('uploads/steelIQ_image_poster.jpg') center/cover no-repeat;filter:brightness(.28) saturate(1.4)}
+.login-bg-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(6,10,18,0.92) 0%,rgba(20,10,40,0.7) 100%)}
+.login-card{position:relative;z-index:2;width:420px;max-width:calc(100vw - 32px);background:rgba(11,17,32,0.85);border:1px solid var(--border2);border-radius:16px;padding:36px 32px;backdrop-filter:blur(24px);box-shadow:0 32px 80px rgba(0,0,0,0.6),0 0 0 1px rgba(80,130,255,0.08)}
+.login-logo{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.login-logo-mark{width:40px;height:40px;border-radius:10px;background:linear-gradient(140deg,var(--blue),oklch(55% 0.22 220deg));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff;box-shadow:0 0 24px oklch(65% 0.22 248deg / 0.45)}
+.login-logo-text{font-size:22px;font-weight:700;letter-spacing:-.5px}
+.login-logo-text em{color:var(--blue);font-style:normal}
+.login-logo-sub{font-size:10px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-top:1px}
+.login-title{font-size:20px;font-weight:700;margin-bottom:4px}
+.login-sub{font-size:12px;color:var(--text-dim);margin-bottom:24px}
+.form-group{margin-bottom:16px}
+.form-label{font-size:11px;font-weight:600;color:var(--text-mid);letter-spacing:.5px;margin-bottom:6px;display:block}
+.form-input{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border2);border-radius:8px;padding:11px 14px;color:var(--text);font-family:var(--sans);font-size:13px;outline:none;transition:border-color .2s}
+.form-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(50,110,255,0.12)}
+.form-input::placeholder{color:var(--text-dim)}
+.login-btn{width:100%;padding:12px;border-radius:8px;font-size:14px;font-weight:700;background:linear-gradient(135deg,var(--blue),oklch(60% 0.22 230deg));color:#fff;border:none;cursor:pointer;font-family:var(--sans);transition:all .2s;letter-spacing:.3px;margin-top:4px;box-shadow:0 4px 20px rgba(50,110,255,0.3)}
+.login-btn:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(50,110,255,0.4)}
+.login-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.login-error{background:var(--red-lo);border:1px solid rgba(255,50,50,.25);border-radius:7px;padding:9px 12px;font-size:12px;color:var(--red);margin-top:12px}
+.demo-accounts{margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+.demo-title{font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;font-weight:600}
+.demo-grid{display:flex;flex-direction:column;gap:5px}
+.demo-item{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:6px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:all .15s}
+.demo-item:hover{background:rgba(50,110,255,0.08);border-color:rgba(50,110,255,0.2)}
+.demo-avatar{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0}
+.demo-info{flex:1}
+.demo-name{font-size:11px;font-weight:600}
+.demo-role{font-size:9px;color:var(--text-dim)}
+.demo-creds{font-family:var(--mono);font-size:9px;color:var(--text-dim);opacity:.6}
+
+/* ── APP LAYOUT ── */
+.app{display:flex;flex-direction:column;height:100vh;position:relative;z-index:1;overflow:hidden}
+.body-wrap{display:flex;flex:1;overflow:hidden}
+
+/* ── HEADER ── */
+.header{height:var(--header-h);display:flex;align-items:center;padding:0 16px 0 0;border-bottom:1px solid var(--border);background:rgba(6,10,18,0.96);backdrop-filter:blur(16px);flex-shrink:0;gap:0;z-index:50;position:relative}
+.header-logo-zone{display:flex;align-items:center;gap:10px;padding:0 16px;height:100%;border-right:1px solid var(--border);flex-shrink:0;min-width:var(--sb-closed);transition:min-width .28s;overflow:hidden}
+.header-logo-zone.open{min-width:var(--sb-open)}
+.logo-mark{width:30px;height:30px;border-radius:7px;background:linear-gradient(140deg,var(--blue),oklch(55% 0.22 220deg));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#fff;box-shadow:0 0 16px oklch(65% 0.22 248deg / 0.35);flex-shrink:0}
+.logo-text{font-size:16px;font-weight:700;white-space:nowrap;letter-spacing:-.3px}
+.logo-text em{color:var(--blue);font-style:normal}
+.logo-sub{font-size:9px;color:var(--text-dim);letter-spacing:1.8px;text-transform:uppercase}
+.hamburger{padding:6px;border-radius:6px;background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;display:none;align-items:center;margin-left:8px}
+.header-kpis{display:flex;align-items:center;flex:1;padding:0 16px;gap:0;overflow:hidden}
+.hkpi{padding:0 16px;border-right:1px solid var(--border);flex-shrink:0}
+.hkpi:first-child{padding-left:0}
+.hkpi-label{font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+.hkpi-val{font-family:var(--mono);font-size:14px;font-weight:600}
+.header-right{display:flex;align-items:center;gap:10px;padding-left:12px;flex-shrink:0}
+.status-pill{display:flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;background:rgba(50,200,100,0.07);border:1px solid rgba(50,200,100,0.2);font-size:10px;color:var(--green);font-weight:500;white-space:nowrap}
+.sdot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pgn 2s infinite}
+@keyframes pgn{0%,100%{box-shadow:0 0 0 0 rgba(50,200,100,0.5)}50%{box-shadow:0 0 0 5px rgba(50,200,100,0)}}
+.heat-tag{font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:4px;background:var(--amber-lo);border:1px solid rgba(255,165,40,0.25);color:var(--amber);white-space:nowrap}
+.clock-tag{font-family:var(--mono);font-size:11px;color:var(--text-dim);white-space:nowrap}
+/* User menu */
+.user-btn{display:flex;align-items:center;gap:8px;padding:5px 10px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);cursor:pointer;transition:all .2s;position:relative}
+.user-btn:hover{background:rgba(255,255,255,0.07);border-color:var(--border2)}
+.user-avatar{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+.user-name{font-size:11px;font-weight:600;white-space:nowrap}
+.user-role-tag{font-size:9px;color:var(--text-dim)}
+.user-dropdown{position:absolute;top:calc(100% + 8px);right:0;width:200px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:6px;box-shadow:0 16px 48px rgba(0,0,0,0.5);z-index:200;backdrop-filter:blur(16px)}
+.ud-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:7px;cursor:pointer;font-size:12px;color:var(--text-mid);transition:all .15s}
+.ud-item:hover{background:rgba(255,255,255,0.05);color:var(--text)}
+.ud-item.danger:hover{background:var(--red-lo);color:var(--red)}
+.ud-divider{height:1px;background:var(--border);margin:4px 0}
+.notif-btn{width:32px;height:32px;border-radius:7px;background:rgba(255,255,255,0.04);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-dim);font-size:14px;position:relative;transition:all .2s}
+.notif-btn:hover{background:rgba(255,255,255,0.08);color:var(--text)}
+.notif-badge{position:absolute;top:4px;right:4px;width:8px;height:8px;border-radius:50%;background:var(--red);border:1px solid var(--bg)}
+
+/* ── SIDEBAR ── */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:40;backdrop-filter:blur(2px)}
+.sidebar{width:var(--sb-open);flex-shrink:0;border-right:1px solid var(--border);background:rgba(6,10,18,0.97);display:flex;flex-direction:column;transition:width .28s cubic-bezier(.4,0,.2,1);overflow:hidden;z-index:41;position:relative}
+.sidebar.closed{width:var(--sb-closed)}
+.sb-toggle-row{height:42px;display:flex;align-items:center;justify-content:flex-end;padding:0 10px;border-bottom:1px solid var(--border);flex-shrink:0}
+.sb-toggle-btn{background:none;border:none;color:var(--text-dim);cursor:pointer;padding:5px 7px;border-radius:5px;font-size:12px;transition:all .2s}
+.sb-toggle-btn:hover{background:rgba(255,255,255,0.06);color:var(--text)}
+.sb-nav{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 0}
+.sb-item{width:100%;display:flex;align-items:center;gap:10px;padding:8px 11px;background:none;border:none;cursor:pointer;color:var(--text-dim);transition:all .18s;white-space:nowrap;text-align:left}
+.sb-item:hover{color:var(--text);background:rgba(255,255,255,0.04)}
+.sb-item.active{color:var(--text);background:rgba(255,255,255,0.05)}
+.sb-icon-wrap{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;transition:all .2s;font-weight:700}
+.si-ov{background:rgba(255,255,255,0.06);color:var(--text-mid)}
+.si-q{background:var(--blue-lo);color:var(--blue)}
+.si-e{background:var(--amber-lo);color:var(--amber)}
+.si-g{background:var(--green-lo);color:var(--green)}
+.si-ad{background:var(--purple-lo);color:var(--purple)}
+.si-al{background:var(--red-lo);color:var(--red)}
+.sb-label{font-size:12px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis}
+.sb-badge{font-size:8px;font-weight:700;padding:2px 5px;border-radius:3px;letter-spacing:.8px;flex-shrink:0}
+.sb-chevron{font-size:9px;flex-shrink:0;transition:transform .2s;opacity:.5}
+.sb-chevron.open{transform:rotate(180deg)}
+.sb-sub{overflow:hidden;max-height:0;transition:max-height .25s ease}
+.sb-sub.open{max-height:280px}
+.sb-sub-btn{width:100%;display:flex;align-items:center;gap:8px;padding:6px 12px 6px 51px;background:none;border:none;cursor:pointer;font-size:11px;color:var(--text-dim);transition:all .15s;text-align:left;white-space:nowrap}
+.sb-sub-btn:hover{color:var(--text);background:rgba(255,255,255,0.03)}
+.sb-sub-btn.active{color:var(--blue);background:var(--blue-lo)}
+.sb-sub-btn::before{content:'';width:4px;height:4px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:.7}
+.sb-divider{height:1px;background:var(--border);margin:6px 10px}
+/* Sidebar bottom user zone */
+.sb-bottom{border-top:1px solid var(--border);padding:10px;flex-shrink:0}
+.sb-user{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid var(--border);cursor:pointer;transition:all .2s;overflow:hidden;white-space:nowrap}
+.sb-user:hover{background:rgba(255,255,255,0.06)}
+.sb-user-info{flex:1;overflow:hidden}
+.sb-user-name{font-size:11px;font-weight:700;overflow:hidden;text-overflow:ellipsis}
+.sb-user-role{font-size:9px;color:var(--text-dim);letter-spacing:.3px;margin-top:1px}
+.sb-logout{padding:6px;border-radius:6px;background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:14px;transition:all .2s;flex-shrink:0}
+.sb-logout:hover{color:var(--red);background:var(--red-lo)}
+
+/* ── MAIN ── */
+.main{flex:1;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.submod-tabs{display:flex;align-items:center;border-bottom:1px solid var(--border);padding:0 20px;height:40px;flex-shrink:0;background:rgba(8,12,22,0.6);overflow-x:auto;gap:0}
+.sm-tab{padding:0 13px;height:100%;font-size:11px;font-weight:500;color:var(--text-dim);cursor:pointer;border:none;border-bottom:2px solid transparent;background:none;transition:all .18s;white-space:nowrap;font-family:var(--sans)}
+.sm-tab:hover{color:var(--text)}
+.sm-tab.active-q{color:var(--blue);border-bottom-color:var(--blue)}
+.sm-tab.active-e{color:var(--amber);border-bottom-color:var(--amber)}
+.sm-tab.active-g{color:var(--green);border-bottom-color:var(--green)}
+.sm-tab.active-ad{color:var(--purple);border-bottom-color:var(--purple)}
+.content{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px}
+
+/* ── CARDS ── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:11px 15px;border-bottom:1px solid var(--border)}
+.card-title{font-size:12px;font-weight:600;display:flex;align-items:center;gap:7px}
+.card-body{padding:14px}
+.badge{font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 6px;border-radius:3px;text-transform:uppercase}
+.badge-q{background:var(--blue-lo);color:var(--blue);border:1px solid rgba(50,110,255,.22)}
+.badge-e{background:var(--amber-lo);color:var(--amber);border:1px solid rgba(255,165,40,.22)}
+.badge-g{background:var(--green-lo);color:var(--green);border:1px solid rgba(50,200,110,.22)}
+.badge-ad{background:var(--purple-lo);color:var(--purple);border:1px solid rgba(160,80,255,.22)}
+.badge-ai{background:rgba(0,210,210,0.1);color:oklch(72% 0.15 190deg);border:1px solid rgba(0,210,210,.2)}
+.badge-sys{background:rgba(140,160,200,0.1);color:var(--text-mid);border:1px solid rgba(140,160,200,.15)}
+.live-chip{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--green);font-weight:600;letter-spacing:.8px;padding:2px 7px;border-radius:10px;background:var(--green-lo)}
+.ldot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pgn 1.5s infinite}
+
+/* ── GRID HELPERS ── */
+.row{display:flex;gap:14px}
+.col{display:flex;flex-direction:column;gap:12px;flex:1;min-width:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+
+/* ── METRIC BOX ── */
+.metric-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px}
+.metric-label{font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.metric-val{font-family:var(--mono);font-size:22px;font-weight:700;line-height:1}
+.metric-sub{font-size:10px;color:var(--text-dim);margin-top:4px}
+.metric-sub.ok{color:var(--green)}.metric-sub.warn{color:var(--amber)}.metric-sub.crit{color:var(--red)}
+
+/* ── PARAM ROW ── */
+.param-row{display:flex;align-items:center;gap:10px;padding:5px 0}
+.param-name{font-size:11px;color:var(--text-mid);width:145px;flex-shrink:0}
+.param-track{flex:1;height:5px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden}
+.param-fill{height:100%;border-radius:3px;transition:width 1.5s ease}
+.param-val{font-family:var(--mono);font-size:11px;width:72px;text-align:right;flex-shrink:0}
+
+/* ── SPARKLINE ── */
+.spark-svg{display:block;width:100%;overflow:visible}
+
+/* ── ALERT ITEMS ── */
+.alert-item{padding:9px 11px;border-radius:7px;border-left:2px solid;margin-bottom:6px;background:rgba(255,255,255,0.02)}
+.alert-item.crit{border-color:var(--red);animation:apulse 2.5s infinite}
+.alert-item.warn{border-color:var(--amber)}
+.alert-item.info{border-color:var(--blue)}
+@keyframes apulse{0%,100%{background:rgba(255,50,50,0.02)}50%{background:rgba(255,50,50,0.07)}}
+.alert-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.alert-title{font-size:11px;font-weight:600}
+.alert-time{font-family:var(--mono);font-size:10px;color:var(--text-dim)}
+.alert-desc{font-size:10px;color:var(--text-mid);line-height:1.5}
+
+/* ── GAUGE ── */
+.gauge-row{display:flex;justify-content:space-around;align-items:center}
+.gauge-item{display:flex;flex-direction:column;align-items:center;gap:5px}
+.gauge-sublabel{font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;text-align:center}
+
+/* ── NLP ── */
+.nlp-bar{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.03);border:1px solid var(--border2);border-radius:8px;padding:10px 12px}
+.nlp-input{background:none;border:none;outline:none;color:var(--text);font-family:var(--mono);font-size:12px;flex:1}
+.nlp-input::placeholder{color:var(--text-dim)}
+.nlp-btn{padding:5px 12px;border-radius:5px;font-size:11px;font-weight:700;background:var(--blue);color:#fff;border:none;cursor:pointer;font-family:var(--sans);white-space:nowrap}
+.nlp-chip{font-size:10px;padding:3px 9px;border-radius:20px;background:var(--blue-lo);border:1px solid rgba(50,110,255,.2);color:var(--blue);cursor:pointer;white-space:nowrap}
+.nlp-result{padding:12px 13px;background:rgba(50,110,255,0.04);border:1px solid rgba(50,110,255,0.15);border-radius:8px;font-size:12px;color:var(--text-mid);line-height:1.7;margin-top:10px}
+
+/* ── DEFECT CARD ── */
+.defect-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px}
+.defect-track{height:3px;background:rgba(255,255,255,.05);border-radius:2px;margin-top:8px}
+.defect-fill{height:100%;border-radius:2px;transition:width 1.5s}
+
+/* ── QEG OVERVIEW CARDS ── */
+.qeg-card{border-radius:var(--radius);padding:18px;position:relative;overflow:hidden;cursor:pointer;transition:transform .2s}
+.qeg-card:hover{transform:translateY(-2px)}
+.qeg-card.q{background:linear-gradient(140deg,rgba(50,110,255,0.1),rgba(50,110,255,0.04));border:1px solid rgba(50,110,255,.22)}
+.qeg-card.e{background:linear-gradient(140deg,rgba(255,165,40,0.1),rgba(255,165,40,0.04));border:1px solid rgba(255,165,40,.22)}
+.qeg-card.g{background:linear-gradient(140deg,rgba(50,200,110,0.1),rgba(50,200,110,0.04));border:1px solid rgba(50,200,110,.22)}
+.qeg-score{font-family:var(--mono);font-size:42px;font-weight:700;line-height:1}
+
+/* ── ADMIN ── */
+.admin-table{width:100%;border-collapse:collapse}
+.admin-table th{text-align:left;padding:8px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);border-bottom:1px solid var(--border)}
+.admin-table td{padding:10px 12px;font-size:11px;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--text-mid)}
+.admin-table tr:hover td{background:rgba(255,255,255,0.02)}
+.role-badge{font-size:9px;padding:2px 8px;border-radius:3px;font-weight:700;letter-spacing:.5px}
+.status-active{background:var(--green-lo);color:var(--green);border:1px solid rgba(50,200,110,.2)}
+.status-inactive{background:rgba(255,255,255,0.05);color:var(--text-dim);border:1px solid var(--border)}
+.action-btn{padding:4px 10px;border-radius:5px;font-size:10px;font-weight:600;border:none;cursor:pointer;font-family:var(--sans);transition:all .15s}
+.btn-primary{background:var(--blue-lo);color:var(--blue);border:1px solid rgba(50,110,255,.25)}
+.btn-primary:hover{background:rgba(50,110,255,.2)}
+.btn-danger{background:var(--red-lo);color:var(--red);border:1px solid rgba(255,50,50,.25)}
+.btn-danger:hover{background:rgba(255,50,50,.2)}
+.btn-success{background:var(--green-lo);color:var(--green);border:1px solid rgba(50,200,110,.25)}
+.btn-success:hover{background:rgba(50,200,110,.2)}
+.config-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.config-label{font-size:11px;color:var(--text-mid);width:160px;flex-shrink:0}
+.config-input{flex:1;background:rgba(255,255,255,0.04);border:1px solid var(--border2);border-radius:6px;padding:7px 11px;color:var(--text);font-family:var(--mono);font-size:11px;outline:none;transition:border-color .2s}
+.config-input:focus{border-color:var(--blue)}
+.config-input.masked{color:var(--text-dim);letter-spacing:2px}
+.ds-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px}
+.ds-status{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600}
+.log-line{font-family:var(--mono);font-size:11px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.03);color:var(--text-mid);line-height:1.5}
+.log-line.err{color:var(--red)}.log-line.warn{color:var(--amber)}.log-line.ok{color:var(--green)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;width:480px;max-width:100%;box-shadow:0 24px 64px rgba(0,0,0,0.5)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)}
+.modal-body{padding:20px}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--border)}
+.modal-close{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:18px;line-height:1;padding:4px}
+.modal-close:hover{color:var(--text)}
+.form-select{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border2);border-radius:6px;padding:9px 11px;color:var(--text);font-family:var(--sans);font-size:12px;outline:none;cursor:pointer}
+.form-select option{background:var(--bg3);color:var(--text)}
+
+/* ── PROCESS IMAGE PANEL ── */
+.process-img{width:100%;border-radius:8px;display:block;border:1px solid var(--border)}
+.process-img-wrap{position:relative;cursor:zoom-in;overflow:hidden;border-radius:8px}
+.process-img-wrap:hover .img-zoom-hint{opacity:1}
+.img-zoom-hint{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);color:#fff;font-size:10px;padding:3px 8px;border-radius:4px;opacity:0;transition:opacity .2s}
+
+/* ── STRAND ── */
+.strand-row{display:flex;gap:8px}
+.strand-box{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:10px;text-align:center}
+.strand-name{font-size:9px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
+.strand-val{font-family:var(--mono);font-size:16px;font-weight:700}
+
+/* ── AI ASSISTANT PANEL ── */
+.ai-tab{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:linear-gradient(180deg,rgba(80,40,255,0.18),rgba(120,60,255,0.22));border:1px solid rgba(160,80,255,0.35);border-right:none;border-radius:10px 0 0 10px;padding:14px 8px;cursor:pointer;transition:all .25s;backdrop-filter:blur(12px);box-shadow:-4px 0 24px rgba(120,60,255,0.18)}
+.ai-tab:hover{background:linear-gradient(180deg,rgba(100,50,255,0.28),rgba(140,70,255,0.32));box-shadow:-6px 0 32px rgba(120,60,255,0.3)}
+.ai-tab-label{writing-mode:vertical-rl;font-size:9px;font-weight:700;letter-spacing:2px;color:var(--purple);text-transform:uppercase;opacity:.85}
+.ai-tab-icon{font-size:16px;animation:ai-pulse 3s infinite}
+@keyframes ai-pulse{0%,100%{filter:drop-shadow(0 0 4px rgba(160,80,255,0.6))}50%{filter:drop-shadow(0 0 10px rgba(160,80,255,0.9))}}
+.ai-panel{position:fixed;right:0;top:0;bottom:0;width:380px;z-index:59;background:rgba(8,10,20,0.97);border-left:1px solid rgba(160,80,255,0.2);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);backdrop-filter:blur(20px);box-shadow:-8px 0 48px rgba(0,0,0,0.6)}
+.ai-panel.open{transform:translateX(0)}
+.ai-panel-header{padding:14px 16px 10px;border-bottom:1px solid rgba(160,80,255,0.15);flex-shrink:0;background:linear-gradient(180deg,rgba(120,60,255,0.08),transparent)}
+.ai-panel-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
+.ai-panel-name{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+.ai-panel-sub{font-size:10px;color:var(--text-dim);letter-spacing:.5px}
+.ai-close{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:18px;line-height:1;padding:2px 6px;border-radius:5px;transition:all .15s}
+.ai-close:hover{color:var(--text);background:rgba(255,255,255,0.06)}
+.ai-search-wrap{padding:10px 14px;border-bottom:1px solid rgba(160,80,255,0.1);flex-shrink:0}
+.ai-search{display:flex;align-items:center;gap:8px;background:rgba(160,80,255,0.07);border:1px solid rgba(160,80,255,0.2);border-radius:8px;padding:8px 12px;transition:border-color .2s}
+.ai-search:focus-within{border-color:rgba(160,80,255,0.45);box-shadow:0 0 0 3px rgba(160,80,255,0.08)}
+.ai-search-input{background:none;border:none;outline:none;color:var(--text);font-family:var(--mono);font-size:11px;flex:1}
+.ai-search-input::placeholder{color:var(--text-dim)}
+.ai-ask-btn{padding:4px 11px;border-radius:5px;font-size:10px;font-weight:700;background:linear-gradient(135deg,var(--purple),oklch(60% 0.22 270deg));color:#fff;border:none;cursor:pointer;font-family:var(--sans);white-space:nowrap;transition:opacity .2s}
+.ai-ask-btn:hover{opacity:.85}
+.ai-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:0}
+.ai-section-head{display:flex;align-items:center;gap:8px;padding:10px 14px 6px;position:sticky;top:0;background:rgba(8,10,20,0.95);z-index:1;backdrop-filter:blur(8px)}
+.ai-section-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-dim);flex:1}
+.ai-section-count{font-family:var(--mono);font-size:9px;color:var(--text-dim);background:rgba(255,255,255,0.05);padding:1px 6px;border-radius:3px}
+.ai-module-group{margin-bottom:2px}
+.ai-module-head{display:flex;align-items:center;gap:9px;padding:8px 14px;cursor:pointer;transition:background .15s;border-left:2px solid transparent}
+.ai-module-head:hover{background:rgba(255,255,255,0.03)}
+.ai-module-head.active-group{border-left-color:var(--purple);background:rgba(160,80,255,0.05)}
+.ai-module-icon{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+.ai-module-label{font-size:11px;font-weight:600;flex:1;color:var(--text-mid)}
+.ai-module-badge{font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;letter-spacing:.5px}
+.ai-mod-chevron{font-size:9px;color:var(--text-dim);transition:transform .2s;opacity:.5}
+.ai-mod-chevron.open{transform:rotate(90deg)}
+.ai-sub-list{overflow:hidden;max-height:0;transition:max-height .22s ease}
+.ai-sub-list.open{max-height:400px}
+.ai-sub-item{display:flex;align-items:center;gap:8px;padding:6px 14px 6px 47px;cursor:pointer;transition:all .12s;border-left:2px solid transparent}
+.ai-sub-item:hover{background:rgba(255,255,255,0.03);color:var(--text)}
+.ai-sub-item.active{border-left-color:var(--purple);background:rgba(160,80,255,0.07);color:var(--purple)}
+.ai-sub-dot{width:4px;height:4px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:.7}
+.ai-sub-label{font-size:11px;flex:1}
+.ai-sub-tag{font-size:8px;font-weight:600;padding:1px 5px;border-radius:2px;white-space:nowrap}
+.ai-result-box{margin:10px 14px;background:rgba(160,80,255,0.05);border:1px solid rgba(160,80,255,0.18);border-radius:8px;padding:12px}
+.ai-result-hd{font-size:10px;font-weight:700;color:var(--purple);margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.ai-result-body{font-size:11px;color:var(--text-mid);line-height:1.7}
+.ai-thinking{display:flex;gap:4px;align-items:center;padding:8px 0}
+.ai-thinking-dot{width:5px;height:5px;border-radius:50%;background:var(--purple);animation:ai-think 1.2s infinite}
+.ai-insight-card{margin:0 14px 6px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:7px;padding:10px 12px;cursor:pointer;transition:all .15s}
+.ai-insight-card:hover{background:rgba(255,255,255,0.04);border-color:rgba(160,80,255,0.2)}
+.ai-insight-head{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.ai-insight-title{font-size:11px;font-weight:600}
+.ai-insight-desc{font-size:10px;color:var(--text-dim);line-height:1.5}
+.ai-insight-sev{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+@keyframes ai-think{0%,60%,100%{transform:translateY(0);opacity:.3}30%{transform:translateY(-4px);opacity:1}}
+@media(max-width:700px){.ai-panel{width:100vw}.ai-tab{display:none}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .header-kpis .hkpi:nth-child(n+4){display:none}
+  .hkpi-label{display:none}
+  .header-kpis{padding:0 8px}
+  .heat-tag,.status-pill{display:none}
+}
+@media(max-width:700px){
+  .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:50;transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1)}
+  .sidebar.mobile-open{transform:translateX(0);width:var(--sb-open)}
+  .sidebar-overlay{display:block}
+  .header-logo-zone{min-width:auto !important;border-right:none}
+  .logo-text,.logo-sub{display:none}
+  .hamburger{display:flex}
+  .grid2,.grid3,.grid4{grid-template-columns:1fr}
+  .row{flex-direction:column}
+  .content{padding:12px}
+  .hkpi-val{font-size:12px}
+  .header-kpis .hkpi:nth-child(n+3){display:none}
+  .clock-tag{display:none}
+}
+@media(max-width:400px){
+  .login-card{padding:24px 18px}
+  .header-kpis .hkpi:nth-child(n+2){display:none}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback, useMemo } = React;
+
+/* ══════════════════════════════════════════════
+   RBAC CONFIG
+══════════════════════════════════════════════ */
+const USERS = [
+  { id:1, email:'admin@emsteel.ae',   pass:'Admin@123',  name:'Khalid Al Mazrouei', role:'super_admin',    initials:'KM', color:'#4a7fff' },
+  { id:2, email:'manager@emsteel.ae', pass:'Mgr@123',    name:'Sarah Johnson',      role:'plant_manager',  initials:'SJ', color:'#a060ff' },
+  { id:3, email:'castx@emsteel.ae',   pass:'CastX@123',  name:'Ahmed Hassan',       role:'castx_operator', initials:'AH', color:'#4a7fff' },
+  { id:4, email:'eaf@emsteel.ae',     pass:'EAF@123',    name:'Ravi Kumar',         role:'eaf_operator',   initials:'RK', color:'#ffa528' },
+  { id:5, email:'dri@emsteel.ae',     pass:'DRI@123',    name:'Fatima Al Ali',      role:'dri_operator',   initials:'FA', color:'#3acc7a' },
+];
+
+const ROLE_LABELS = {
+  super_admin:'Super Admin', plant_manager:'Plant Manager',
+  castx_operator:'CastX Operator', eaf_operator:'EAF Operator', dri_operator:'DRI Operator'
+};
+
+const ROLE_ACCESS = {
+  super_admin:   ['overview','q','e','g','admin','alerts'],
+  plant_manager: ['overview','q','e','g','alerts'],
+  castx_operator:['overview','q','alerts'],
+  eaf_operator:  ['overview','e','alerts'],
+  dri_operator:  ['overview','g','alerts'],
+};
+
+const canAccess = (role, mod) => (ROLE_ACCESS[role]||[]).includes(mod);
+
+/* ══════════════════════════════════════════════
+   UTILITIES & HOOKS
+══════════════════════════════════════════════ */
+const clamp = (v,lo,hi) => Math.max(lo,Math.min(hi,v));
+const fmt = (v,dp=1) => typeof v==='number' ? v.toFixed(dp) : String(v);
+
+function useWave(init, lo, hi, step=0.5, ms=1800) {
+  const [v,setV] = useState(init);
+  const r = useRef(init);
+  useEffect(()=>{
+    const id=setInterval(()=>{ r.current=clamp(r.current+(Math.random()-.5)*step*4,lo,hi); setV(+r.current.toFixed(2)); },ms+Math.random()*600);
+    return()=>clearInterval(id);
+  },[]);
+  return v;
+}
+
+function useSpark(init,n=40,lo,hi,step=0.5) {
+  const [data,setData]=useState(()=>{
+    const a=[init];
+    for(let i=1;i<n;i++) a.push(clamp(a[i-1]+(Math.random()-.5)*step*4,lo,hi));
+    return a;
+  });
+  useEffect(()=>{
+    const id=setInterval(()=>setData(p=>{
+      const last=p[p.length-1];
+      return [...p.slice(1),clamp(last+(Math.random()-.5)*step*4,lo,hi)];
+    }),1300);
+    return()=>clearInterval(id);
+  },[]);
+  return data;
+}
+
+/* ══════════════════════════════════════════════
+   SHARED COMPONENTS
+══════════════════════════════════════════════ */
+function Sparkline({data,color,h=50,fill=true,predicted=null}) {
+  if(!data||data.length<2) return null;
+  const all=[...data,...(predicted||[])];
+  const mn=Math.min(...all),mx=Math.max(...all),rng=mx-mn||1;
+  const W=200,H=h;
+  const pt=(v,i,offset=0)=>[((i+offset)/(data.length+(predicted?predicted.length:1)-1))*W,H-((v-mn)/rng)*(H*.85)-H*.075];
+  const apts=data.map((v,i)=>pt(v,i));
+  const ppath=pts=>pts.map((p,i)=>(i===0?`M${p[0]},${p[1]}`:`L${p[0]},${p[1]}`)).join(' ');
+  const ap=ppath(apts);
+  const fp=`${ap} L${apts[apts.length-1][0]},${H} L0,${H} Z`;
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="spark-svg" style={{height:h}}>
+      {fill&&<path d={fp} fill={color} fillOpacity=".1"/>}
+      <path d={ap} stroke={color} strokeWidth="1.5" fill="none" strokeLinejoin="round" strokeLinecap="round"/>
+      {predicted&&<path d={`M${apts[apts.length-1][0]},${apts[apts.length-1][1]} `+predicted.map((v,i)=>{const p=pt(v,i,data.length-1);return`L${p[0]},${p[1]}`}).join(' ')} stroke={color} strokeWidth="1.5" fill="none" strokeDasharray="4 3" strokeOpacity=".45" strokeLinecap="round"/>}
+      <circle cx={apts[apts.length-1][0]} cy={apts[apts.length-1][1]} r="3" fill={color} style={{filter:`drop-shadow(0 0 4px ${color})`}}/>
+    </svg>
+  );
+}
+
+function ArcGauge({value,max,color,size=72,label,unit=''}) {
+  const pct=clamp(value/max,0,1);
+  const r=size*.38,cx=size/2,cy=size/2;
+  const sa=-210,ea=30,arc=(ea-sa)*pct;
+  const toR=d=>d*Math.PI/180;
+  const pp=a=>[cx+r*Math.cos(toR(a)),cy+r*Math.sin(toR(a))];
+  const [sx,sy]=pp(sa),[ex,ey]=pp(sa+arc),[bx,by]=pp(ea);
+  const la=arc>180?1:0,bla=(ea-sa)>180?1:0;
+  const dv=typeof value==='number'?(value>99?Math.round(value):value.toFixed(value<10?1:0)):value;
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <path d={`M${sx},${sy} A${r},${r} 0 ${bla} 1 ${bx},${by}`} stroke="rgba(255,255,255,0.06)" strokeWidth="4.5" fill="none" strokeLinecap="round"/>
+      {pct>0&&<path d={`M${sx},${sy} A${r},${r} 0 ${la} 1 ${ex},${ey}`} stroke={color} strokeWidth="4.5" fill="none" strokeLinecap="round" style={{filter:`drop-shadow(0 0 5px ${color}88)`}}/>}
+      <text x={cx} y={cy-1} textAnchor="middle" dominantBaseline="middle" fill={color} fontSize={size*.19} fontWeight="700" fontFamily="'JetBrains Mono',monospace">{dv}{unit}</text>
+      {label&&<text x={cx} y={cy+size*.17} textAnchor="middle" fill="rgba(140,160,200,.7)" fontSize={size*.1} fontFamily="'Space Grotesk',sans-serif">{label}</text>}
+    </svg>
+  );
+}
+
+function ScoreRing({score,color,label,size=78}) {
+  const r=size*.4,cx=size/2,cy=size/2,circ=2*Math.PI*r,dash=(score/100)*circ;
+  return (
+    <div className="gauge-item">
+      <svg width={size} height={size}>
+        <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="5.5"/>
+        <circle cx={cx} cy={cy} r={r} fill="none" stroke={color} strokeWidth="5.5"
+          strokeDasharray={`${dash} ${circ}`} strokeDashoffset={circ*.25} strokeLinecap="round"
+          style={{filter:`drop-shadow(0 0 7px ${color}55)`,transition:'stroke-dasharray 1.5s ease'}}/>
+        <text x={cx} y={cy} textAnchor="middle" dominantBaseline="middle" fill={color} fontSize={size*.23} fontWeight="700" fontFamily="'JetBrains Mono',monospace">{score}</text>
+      </svg>
+      <div className="gauge-sublabel">{label}</div>
+    </div>
+  );
+}
+
+function ParamRow({name,value,unit,lo,hi,color,dp=1}) {
+  const pct=clamp((value-lo)/(hi-lo)*100,2,100);
+  const warn=pct>82||pct<12;
+  const col=warn?'var(--amber)':color;
+  return (
+    <div className="param-row">
+      <div className="param-name">{name}</div>
+      <div className="param-track"><div className="param-fill" style={{width:`${pct}%`,background:col}}/></div>
+      <div className="param-val" style={{color:warn?'var(--amber)':'var(--text-mid)'}}>{fmt(value,dp)}{unit}</div>
+    </div>
+  );
+}
+
+function Clock() {
+  const [t,setT]=useState(new Date());
+  useEffect(()=>{const id=setInterval(()=>setT(new Date()),1000);return()=>clearInterval(id)},[]);
+  return <span className="clock-tag">{t.toLocaleTimeString('en-AE',{hour12:false})} GST</span>;
+}
+
+function ProcessImage({src,alt,caption}) {
+  const [zoomed,setZoomed]=useState(false);
+  return (<>
+    <div className="process-img-wrap" onClick={()=>setZoomed(true)}>
+      <img src={src} alt={alt} className="process-img"/>
+      <div className="img-zoom-hint">⤢ Click to enlarge</div>
+    </div>
+    {caption&&<div style={{fontSize:10,color:'var(--text-dim)',marginTop:6,textAlign:'center'}}>{caption}</div>}
+    {zoomed&&<div className="modal-overlay" onClick={()=>setZoomed(false)} style={{zIndex:300}}>
+      <img src={src} alt={alt} style={{maxWidth:'92vw',maxHeight:'88vh',borderRadius:10,boxShadow:'0 24px 80px rgba(0,0,0,.8)'}}/>
+    </div>}
+  </>);
+}
+
+/* ══════════════════════════════════════════════
+   NLP PANEL
+══════════════════════════════════════════════ */
+const NLP_ANSWERS = {
+  'mould level':'📊 Mould Level — Last 3 Heats:\n• Heat 2845: avg 142mm (±2mm) — Stable\n• Heat 2846: avg 139mm (±5mm) — Minor oscillation at 14:22\n• Heat 2847 (active): avg 144mm (±2mm) — Stable\nBreakout risk: LOW (4%).',
+  'defect':'⚠️ Defect Prediction (CastX ML):\n• Web Cracks — Strand 2: 63% [HIGH RISK]\n• Seam Defects: 14% [LOW]\n• Surface Cracks: 23% [MODERATE]\nCause: Tundish superheat 31°C (target 22–28°C). Reduce heat input.',
+  'energy':'⚡ EAF Energy Analysis:\nActual: 412 kWh/ton | Target: 390 kWh/ton | Delta: +5.6%\nArc Phase B instability contributed ~15 kWh/ton excess. Increase DRI ratio to 72%.',
+  'gas':'🔥 DRI Gas:\nFlow: 28,400 Nm³/h | Metallization: 92.4%\nZone 3 temp 8°C below profile. Gas/Iron ratio: 1.42 (optimal: 1.35–1.45).',
+  'outlier':'🔍 Outlier Detection:\n• Cast speed spike Strand 1: +0.18 m/min at 02:07\n• Mould oil flow: 2.6 L/min at 01:44 (threshold 2.8)\n• EAF current Phase A: +12% at 00:58 (corrected)\nML confidence: 97.2%',
+  'metallization':'🔬 Metallization:\nCurrent: 92.4% | Target: >91%\nForecast (2h): 91.8% → 93.1% ↑. Zone 3 temp: 956°C. All parameters normal.',
+};
+function NLPPanel() {
+  const [q,setQ]=useState('');const [res,setRes]=useState(null);const [loading,setLoading]=useState(false);
+  const run=useCallback((query=q)=>{
+    if(!query.trim()) return;
+    setLoading(true);setRes(null);
+    setTimeout(()=>{ const k=Object.keys(NLP_ANSWERS).find(k=>query.toLowerCase().includes(k))||'mould level'; setRes(NLP_ANSWERS[k]);setLoading(false); },900);
+  },[q]);
+  return (
+    <div className="col">
+      <div className="nlp-bar">
+        <span style={{color:'var(--blue)',fontSize:16,flexShrink:0}}>⌘</span>
+        <input className="nlp-input" placeholder='Ask in plain English — e.g. "Show EAF energy trend"' value={q} onChange={e=>setQ(e.target.value)} onKeyDown={e=>e.key==='Enter'&&run()}/>
+        <button className="nlp-btn" onClick={()=>run()}>Ask AI</button>
+      </div>
+      <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+        {['Mould level last 3 heats','EAF energy trend','Defect prediction','Gas status','Outliers','Metallization forecast'].map(s=>(
+          <span key={s} className="nlp-chip" onClick={()=>{setQ(s);run(s)}}>{s}</span>
+        ))}
+      </div>
+      {loading&&<div style={{display:'flex',gap:5,alignItems:'center',color:'var(--text-dim)',fontSize:11,padding:8}}>
+        {[0,1,2].map(i=><div key={i} style={{width:5,height:5,borderRadius:'50%',background:'var(--blue)',animation:`pgn ${1.2+i*.15}s infinite ${i*.15}s`}}/>)}
+        <span>Analyzing process streams...</span>
+      </div>}
+      {res&&<div className="nlp-result">{res.split('\n').map((l,i)=><div key={i} style={{marginBottom:l.startsWith('•')?3:0}}>{l}</div>)}</div>}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════
+   PROCESS FLOW SVG
+══════════════════════════════════════════════ */
+function ProcessFlow({onStageClick}) {
+  const [tick,setTick]=useState(0);
+  useEffect(()=>{const id=setInterval(()=>setTick(t=>t+1),70);return()=>clearInterval(id)},[]);
+  const stages=[
+    {id:'ore',label:'Iron Ore',sub:'Raw Material',color:'#8a9bbf',x:18,w:90,h:60,metric:'',val:''},
+    {id:'dri',label:'DRI Reactor',sub:'Gas Reduction',color:'#3acc7a',x:135,w:130,h:88,metric:'Metallization',val:'92.4%'},
+    {id:'eaf',label:'Elec. Arc Furnace',sub:'Melting (EAF)',color:'#ffa528',x:300,w:135,h:88,metric:'Energy',val:'412 kWh/t'},
+    {id:'lf',label:'Ladle Furnace',sub:'Refining (LF)',color:'#a060ff',x:470,w:120,h:88,metric:'Temp',val:'1596°C'},
+    {id:'cast',label:'Cont. Casting',sub:'Solidification',color:'#3a78ff',x:625,w:125,h:88,metric:'Speed',val:'1.4 m/min'},
+    {id:'prod',label:'Steel Billet',sub:'Final Product',color:'#8a9bbf',x:785,w:90,h:60,metric:'Yield',val:'94.2%'},
+  ];
+  const dotCount=10;
+  const dots=Array.from({length:dotCount},(_,i)=>{
+    const totalPct=((tick*0.7+i*(100/dotCount))%100)/100;
+    const segs=stages.length-1;
+    const seg=Math.floor(totalPct*segs);
+    const sp=(totalPct*segs)%1;
+    const fr=stages[Math.min(seg,stages.length-1)];
+    const to=stages[Math.min(seg+1,stages.length-1)];
+    const x1=fr.x+fr.w,x2=to.x;
+    return {x:x1+(x2-x1)*sp,y:100,color:fr.color};
+  });
+  return (
+    <svg viewBox="0 0 900 200" preserveAspectRatio="xMidYMid meet" style={{width:'100%',height:'100%',display:'block'}}>
+      {stages.slice(0,-1).map((s,i)=>{
+        const nx=stages[i+1];
+        return (<g key={s.id+'ln'}>
+          <line x1={s.x+s.w} y1={100} x2={nx.x} y2={100} stroke="rgba(255,255,255,0.07)" strokeWidth="2"/>
+          <line x1={s.x+s.w} y1={100} x2={nx.x} y2={100} stroke={s.color} strokeWidth="1.5" strokeOpacity=".3" strokeDasharray="6 4">
+            <animate attributeName="stroke-dashoffset" from="0" to="-20" dur=".8s" repeatCount="indefinite"/>
+          </line>
+          <polygon points={`${nx.x-1},96 ${nx.x-1},104 ${nx.x+6},100`} fill={s.color} opacity=".5"/>
+        </g>);
+      })}
+      {dots.map((d,i)=><circle key={i} cx={d.x} cy={d.y} r="2.5" fill={d.color} opacity=".75" style={{filter:`drop-shadow(0 0 3px ${d.color})`}}/>)}
+      {stages.map(s=>{
+        const ep=s.id==='ore'||s.id==='prod';
+        const cy=100-s.h/2;
+        return (
+          <g key={s.id} onClick={()=>!ep&&onStageClick&&onStageClick(s.id)} style={{cursor:ep?'default':'pointer'}}>
+            <rect x={s.x} y={cy} width={s.w} height={s.h} rx="8"
+              fill="rgba(8,12,24,0.88)" stroke={s.color} strokeWidth={ep?1:1.5} strokeOpacity={ep?.3:.65}
+              style={{filter:ep?undefined:`drop-shadow(0 0 8px ${s.color}30)`}}/>
+            <text x={s.x+s.w/2} y={cy+18} textAnchor="middle" fill={s.color} fontSize={ep?9:10} fontWeight="700" fontFamily="'Space Grotesk',sans-serif">{s.label.split(' ')[0]}</text>
+            {s.label.split(' ').length>1&&<text x={s.x+s.w/2} y={cy+30} textAnchor="middle" fill={s.color} fontSize={10} fontWeight="700" fontFamily="'Space Grotesk',sans-serif">{s.label.split(' ').slice(1).join(' ')}</text>}
+            <text x={s.x+s.w/2} y={cy+(ep?42:44)} textAnchor="middle" fill="rgba(140,160,200,.55)" fontSize={8.5} fontFamily="'Space Grotesk',sans-serif" letterSpacing=".5">{s.sub}</text>
+            {!ep&&<>
+              <line x1={s.x+12} y1={cy+54} x2={s.x+s.w-12} y2={cy+54} stroke="rgba(255,255,255,0.06)" strokeWidth="1"/>
+              <text x={s.x+s.w/2} y={cy+65} textAnchor="middle" fill="rgba(140,160,200,.45)" fontSize={8} fontFamily="'Space Grotesk',sans-serif">{s.metric}</text>
+              <text x={s.x+s.w/2} y={cy+77} textAnchor="middle" fill={s.color} fontSize={10} fontWeight="600" fontFamily="'JetBrains Mono',monospace">{s.val}</text>
+            </>}
+            {ep&&s.val&&<text x={s.x+s.w/2} y={cy+50} textAnchor="middle" fill={s.color} fontSize={10} fontWeight="600" fontFamily="'JetBrains Mono',monospace">{s.val}</text>}
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+/* ══════════════════════════════════════════════
+   VIEWS
+══════════════════════════════════════════════ */
+function OverviewView({data,setModule}) {
+  return (
+    <div className="content">
+      <div className="card">
+        <div className="card-header">
+          <div className="card-title"><span className="badge badge-sys">PROCESS ROUTE</span>Emirates Steel — Production Flow</div>
+          <div style={{display:'flex',gap:8,alignItems:'center'}}><span style={{fontSize:10,color:'var(--text-dim)'}}>Click stage to navigate</span><div className="live-chip"><div className="ldot"/>LIVE</div></div>
+        </div>
+        <div className="card-body" style={{height:206}}>
+          <ProcessFlow onStageClick={id=>{
+            if(id==='dri') setModule('g','Gas Consumption');
+            else if(id==='eaf') setModule('e','Energy Optimization');
+            else setModule('q','Snapshot Visualization');
+          }}/>
+        </div>
+      </div>
+      <div className="grid3">
+        {[
+          {key:'q',label:'Q',name:'Quality — CastX',desc:'Continuous casting quality, defect prediction, outlier detection, NLP analytics',color:'var(--blue)',mod:'q',sub:'Outlier Detection',metrics:[{l:'Defect Risk',v:`${data.defectRisk}%`,c:'var(--red)'},{l:'Cast Speed',v:`${data.castSpeed.toFixed(2)} m/m`,c:'var(--blue)'},{l:'Breakout',v:'LOW',c:'var(--green)'}],score:data.qScore,statusTag:'COMPLETED 2025'},
+          {key:'e',label:'E',name:'Electrical — EAF',desc:'Energy optimization, arc stability, charge mix, electrode health & maintenance',color:'var(--amber)',mod:'e',sub:'Energy Optimization',metrics:[{l:'Energy',v:`${data.eafKwh.toFixed(0)} kWh/t`,c:'var(--amber)'},{l:'Arc Stab.',v:`${data.arcStability.toFixed(0)}%`,c:'var(--green)'},{l:'Tap Time',v:`${data.tapTime.toFixed(0)}m`,c:'var(--text-mid)'}],score:data.eScore,statusTag:'ROADMAP 2026'},
+          {key:'g',label:'G',name:'Gas — DRI/DRP',desc:'Gas consumption optimization, metallization prediction, temperature profiling',color:'var(--green)',mod:'g',sub:'Gas Consumption',metrics:[{l:'Gas Flow',v:`${(data.gasFlow/1000).toFixed(1)}k Nm³`,c:'var(--green)'},{l:'Metalliz.',v:`${data.metallization.toFixed(1)}%`,c:'var(--green)'},{l:'Yield',v:`${data.yieldPct.toFixed(1)}%`,c:'var(--text-mid)'}],score:data.gScore,statusTag:'ROADMAP 2026'},
+        ].map(m=>(
+          <div key={m.key} className={`qeg-card ${m.key}`} onClick={()=>setModule(m.mod,m.sub)} style={{cursor:'pointer'}}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+              <div style={{fontSize:10,fontWeight:700,letterSpacing:2,textTransform:'uppercase',color:m.color,opacity:.7}}>{m.key.toUpperCase()} · {m.name.split('—')[0].trim()}</div>
+              <span style={{fontSize:9,padding:'2px 8px',borderRadius:3,fontWeight:700,letterSpacing:.5,background:m.key==='q'?'rgba(50,200,100,0.15)':'rgba(255,165,40,0.12)',color:m.key==='q'?'var(--green)':'var(--amber)',border:`1px solid ${m.key==='q'?'rgba(50,200,100,.3)':'rgba(255,165,40,.3)'}`}}>{m.statusTag}</span>
+            </div>
+            <div style={{display:'flex',alignItems:'flex-end',gap:10,margin:'6px 0'}}>
+              <div className="qeg-score" style={{color:m.color}}>{m.score}</div>
+              <div style={{marginBottom:8,fontFamily:'var(--mono)',fontSize:12,color:m.color,opacity:.5}}>/100</div>
+            </div>
+            <div style={{fontSize:13,fontWeight:600,marginBottom:4}}>{m.name.split('—')[1]?.trim()||m.name}</div>
+            <div style={{fontSize:10,color:'var(--text-dim)',lineHeight:1.5,marginBottom:10}}>{m.desc}</div>
+            <div style={{display:'flex',gap:12}}>
+              {m.metrics.map(mt=>(
+                <div key={mt.l}><div style={{fontSize:9,color:'var(--text-dim)'}}>{mt.l}</div><div style={{fontFamily:'var(--mono)',fontSize:12,fontWeight:600,color:mt.c}}>{mt.v}</div></div>
+              ))}
+            </div>
+            <div style={{marginTop:10,fontSize:10,color:m.color,fontWeight:600,opacity:.8}}>Open {m.name.split('—')[1]?.trim()||m.name} →</div>
+          </div>
+        ))}
+      </div>
+      <div className="row">
+        <div className="card col" style={{flex:'0 0 340px'}}>
+          <div className="card-header"><div className="card-title"><span className="badge badge-sys">QEG</span>System Health</div></div>
+          <div className="card-body">
+            <div className="gauge-row"><ScoreRing score={data.qScore} color="var(--blue)" label="QUALITY" size={80}/><ScoreRing score={data.eScore} color="var(--amber)" label="ENERGY" size={80}/><ScoreRing score={data.gScore} color="var(--green)" label="GAS" size={80}/></div>
+            <div className="grid3" style={{marginTop:12}}>
+              {[{l:'CastX OEE',v:'94.1%',c:'var(--blue)'},{l:'EAF Uptime',v:'98.3%',c:'var(--amber)'},{l:'DRI Eff.',v:'91.8%',c:'var(--green)'}].map(m=>(
+                <div key={m.l} style={{textAlign:'center',padding:'7px 4px',background:'var(--bg3)',borderRadius:6,border:'1px solid var(--border)'}}>
+                  <div style={{fontSize:9,color:'var(--text-dim)',marginBottom:3}}>{m.l}</div>
+                  <div style={{fontFamily:'var(--mono)',fontSize:14,fontWeight:700,color:m.c}}>{m.v}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="card col">
+          <div className="card-header"><div className="card-title"><span className="badge badge-sys">ALERTS</span>Active Events</div><span style={{fontFamily:'var(--mono)',fontSize:11,color:'var(--red)'}}>3 critical</span></div>
+          <div className="card-body">
+            {[
+              {type:'crit',t:'Web Crack Risk — Strand 2',d:'63% probability. Reduce tundish heat input.',time:'02:14'},
+              {type:'crit',t:'EAF Electrode Wear — Set B',d:'68% wear. Replacement window: 3h 40min.',time:'01:58'},
+              {type:'warn',t:'Arc Instability — Phase B',d:'Voltage ±8% fluctuation. Check electrode alignment.',time:'01:44'},
+              {type:'info',t:'Charge Mix Optimized by AI',d:'DRI ratio → 71%. Saving: 12 kWh/ton.',time:'00:30'},
+            ].map((a,i)=>(
+              <div key={i} className={`alert-item ${a.type}`}>
+                <div className="alert-top"><div className="alert-title" style={{color:a.type==='crit'?'var(--red)':a.type==='warn'?'var(--amber)':'var(--blue)'}}>{a.t}</div><div className="alert-time">{a.time} ago</div></div>
+                <div className="alert-desc">{a.d}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="card">
+        <div className="card-header"><div className="card-title"><span className="badge badge-sys">PROCESS</span>Emirates Steel — Process Reference</div></div>
+        <div className="card-body">
+          <ProcessImage src="assets/pptx_image2.png" alt="Emirates Steel Process Route" caption="Raw Material → Direct Reduction → EAF Steel Making → Ladle Treatment → Billet / Beam Blank"/>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── CastX (Q) ── */
+function CastXView({sub,data}) {
+  const tSpark=useSpark(1550,40,1510,1590,2);
+  const mSpark=useSpark(142,40,128,158,2);
+  const sSpark=useSpark(1.4,40,1.1,1.8,.06);
+  const pred=useMemo(()=>Array.from({length:14},(_,i)=>clamp(tSpark[tSpark.length-1]+(Math.random()-.47)*2*i*.25,1510,1590)),[]);
+  if(sub==='Outlier Detection') return (
+    <div className="content">
+      <div className="row">
+        <div className="col">
+          <div className="card">
+            <div className="card-header"><div className="card-title"><span className="badge badge-q">Q</span>Tundish Temperature — Outlier Monitor</div><div className="live-chip"><div className="ldot"/>LIVE</div></div>
+            <div className="card-body">
+              <div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><span style={{fontSize:11,color:'var(--text-dim)'}}>40 observations · ±2σ bounds</span><span style={{fontFamily:'var(--mono)',fontSize:12,color:'var(--blue)'}}>{data.tundishTemp.toFixed(0)}°C</span></div>
+              <Sparkline data={tSpark} color="var(--blue)" h={72}/>
+              <div className="grid4" style={{marginTop:10}}>
+                {[{l:'Mean',v:'1548°C'},{l:'Std Dev',v:'±8.2°C'},{l:'Outliers (1h)',v:'2',c:'var(--amber)'},{l:'Status',v:'Normal',c:'var(--green)'}].map(m=>(
+                  <div key={m.l} style={{background:'var(--bg3)',border:'1px solid var(--border)',borderRadius:6,padding:'9px 11px'}}>
+                    <div style={{fontSize:9,color:'var(--text-dim)',marginBottom:3}}>{m.l}</div>
+                    <div style={{fontFamily:'var(--mono)',fontSize:13,fontWeight:600,color:m.c||'var(--text-mid)'}}>{m.v}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-header"><div className="card-title"><span className="badge badge-q">Q</span>Mould Level — Anomaly Detection</div><div className="live-chip"><div className="ldot"/>LIVE</div></div>
+            <div className="card-body">
+              <Sparkline data={mSpark} color="oklch(70% 0.18 200deg)" h={60}/>
+              <div className="grid4" style={{marginTop:10}}>
+                {[{l:'Current',v:`${data.mouldLevel.toFixed(0)}mm`},{l:'Oscillation',v:'±2.8mm'},{l:'Anomalies',v:'1',c:'var(--amber)'},{l:'Range OK',v:'Yes',c:'var(--green)'}].map(m=>(
+                  <div key={m.l} style={{background:'var(--bg3)',border:'1px solid var(--border)',borderRadius:6,padding:'9px 11px'}}>
+                    <div style={{fontSize:9,color:'var(--text-dim)',marginBottom:3}}>{m.l}</div>
+                    <div style={{fontFamily:'var(--mono)',fontSize:13,fontWeight:600,color:m.c||'var(--text-mid)'}}>{m.v}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{width:260,flexShrink:0,display:'flex',flexDirection:'column',gap:12}}>
+          <div className="card">
+            <div className="card-header"><div className="card-title"><span className="badge badge-ai">ML</span>Detected Outliers</div></div>
+            <div className="card-body">
+              {[{p:'Cast Speed',t:'02:07',v:'+0.18 m/min',sev:'warn'},{p:'Mould Oil Flow',t:'01:44',v:'2.6 L/min ↓',sev:'warn'},{p:'Tundish Temp',t:'01:12',v:'1582°C ↑',sev:'crit'},{p:'Arc Current',t:'00:58',v:'Phase A +12%',sev:'info'}].map(o=>(
+                <div key={o.p} style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'8px 0',borderBottom:'1px solid var(--border)'}}>
+                  <div><div style={{fontSize:11,fontWeight:600,color:o.sev==='crit'?'var(--red)':o.sev==='warn'?'var(--amber)':'var(--blue)'}}>{o.p}</div><div style={{fontSize:10,color:'var(--text-dim)'}}>{o.t} ago</div></div>
+                  <div style={{fontFamily:'var(--mono)',fontSize:11,color:'var(--text-mid)'}}>{o.v}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-header"><div className="card-title"><span className="badge badge-q">Q</span>Root Cause</div></div>
+            <div className="card-body" style={{fontSize:11,color:'var(--text-mid)',lineHeight:1.7}}>
+              <div style={{marginBottom:8}}><span style={{color:'var(--amber)',fontWeight:600}}>Primary:</span> Superheat exceeded 28°C at 01:12</div>
+              <div style={{marginBottom:8}}><span style={{color:'var(--blue)',fontWeight:600}}>Contributing:</span> Oil flow drop + speed increase correlated</div>
+              <div><span style={{color:'var(--green)',fontWeight:600}}>Action:</span> Reduce heat 8°C. Oil flow → 3.1 L/min</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+  if(sub==='Defect Prediction') return (
+    <div className="content">
+      <div className="row">
+        <div className="col">
+          <div className="grid2">
+            {[{name:'Web Cracks — Strand 2',risk:data.defectRisk,hi:60,desc:'Elevated superheat driving surface crack formation on S2'},{name:'Seam Defects',risk:14,hi:35,desc:'Low risk. Oscillation marks within normal range'},{name:'Surface Cracks',risk:23,hi:40,desc:'Moderate. Monitor casting speed variation carefully'},{name:'Internal Voids',risk:8,hi:25,desc:'Low risk. Solidification profile normal across all strands'}].map(d=>{
+              const col=d.risk>d.hi?'var(--red)':d.risk>d.hi*.6?'var(--amber)':'var(--green)';
+              return (<div key={d.name} className="defect-card">
+                <div style={{fontSize:10,color:'var(--text-dim)',marginBottom:5}}>{d.name}</div>
+                <div style={{fontFamily:'var(--mono)',fontSize:24,fontWeight:700,color:col}}>{d.risk}%</div>
+                <div style={{fontSize:9,fontWeight:700,color:col,marginTop:2}}>{d.risk>d.hi?'HIGH RISK':d.risk>d.hi*.6?'MODERATE':'LOW RISK'}</div>
+                <div className="defect-track"><div className="defect-fill" style={{width:`${d.risk}%`,background:col}}/></div>
+                <div style={{fontSize:10,color:'var(--text-dim)',marginTop:8,lineHeight:1.5}}>{d.desc}</div>
+              </div>);
+            })}
+          </div>
+          <div className="card">
+            <div className="card-header"><div className="card-title"><span className="badge badge-q">Q</span>Strand Status</div><div className="live-chip"><div className="ldot"/>LIVE</div></div>
+            <div className="card-body">
+              <div className="strand-row">
+                {[1,2,3].map(s=>{
+                  const sp=useWave(1.4,1.1,1.7,.05);const risk=s===2?data.defectRisk:useWave(12,5,28,3);
+                  const col=risk>50?'var(--red)':risk>30?'var(--amber)':'var(--green)';
+                  return (<div key={s} className="strand-box"><div className="strand-name">Strand {s}</div><div className="strand-val" style={{color:'var(--blue)'}}>{sp.toFixed(2)}</div><div style={{fontSize:9,color:'var(--text-dim)',marginBottom:6}}>m/min</div><div style={{fontSize:9,fontWeight:700,color:col,padding:'2px 7px',background:`${col}18`,borderRadius:3}}>{risk>50?'⚠ HIGH':risk>30?'MODERATE':'NORMAL'}</div></div>);
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{width:260,flexShrink:0,display:'flex',flexDirection:'column',gap:12}}>
+          <div className="card">
+            <div className="card-header"><div className="card-title"><span className="badge badge-ai">ML</span>Model Info</div></div>
+            <div className="card-body">
+              {[{l:'Type',v:'Supervised ML'},{l:'Training Data',v:'18,400 heats'},{l:'Accuracy',v:'94.2%',c:'var(--green)'},{l:'Last Train',v:'3 days ago'},{l:'Features',v:'24 params'},{l:'Inference',v:'<120ms',c:'var(--green)'}].map(r=>(
+                <div key={r.l} style={{display:'flex',justifyContent:'space-between',padding:'7px 0',borderBottom:'1px solid var(--border)'}}><span style={{fontSize:11,color:'var(--text-dim)'}}>{r.l}</span><span style={{fontFamily:'var(--mono)',fontSize:11,color:r.c||'var(--text-mid)'}}>{r.v}</span></div>
+              ))}
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-header"><div className="card-title"><span className="badge badge-q">Q</span>Recommendations</div></div>
+            <div className="card-body" style={{display:'flex',flexDirection:'column',gap:7}}>
+              {[{icon:'🌡',t:'Reduce tundish superheat by 8–10°C',sev:'crit'},{icon:'⚡',t:'Lower S2 speed to 1.25 m/min',sev:'warn'},{icon:'💧',t:'Increase oil flow to 3.2 L/min',sev:'info'}].map(r=>(
+                <div key={r.t} style={{padding:'8px 10px',borderRadius:6,background:'rgba(255,255,255,0.02)',border:`1px solid ${r.sev==='crit'?'rgba(255,60,50,.2)':r.sev==='warn'?'rgba(255,165,40,.2)':'rgba(50,110,255,.18)'}`,fontSize:11,color:'var(--text-mid)',lineHeight:1.5}}>{r.icon} {r.t}</div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+  if(sub==='Snapshot Visualization') return (
+    <div className="content">
+      <div className="row">
+        <div className="col">
+          <div className="card">
+            <div className="card-header"><div className="card-title"><span className="badge badge-q">Q</span>Live Casting Parameters</div><div className="live-chip"><div className="ldot"/>LIVE</div></div>
+            <div className="card-body">
+              <div className="gauge-row" style={{marginBottom:14}}>
+                <ArcGauge value={data.tundishTemp} max={1650} color="var(--amber)" size={88} label="Tundish°C"/>
+                <ArcGauge value={data.mouldLevel} max={180} color="oklch(70% 0.18 200deg)" size={88} label="Mould mm"/>
+                <ArcGauge value={data.castSpeed} max={2.5} color="var(--blue)" size={88} label="Speed m/m"/>
+                <ArcGauge value={useWave(3.2,2.8,3.8,.08)} max={5} color="var(--green)" size={88} label="Oil L/min"/>
+              </div>
+              <div style={{borderTop:'1px solid var(--border)',paddingTop:10}}>
+                <ParamRow name="Tundish Temperature" value={data.tundishTemp} unit="°C" lo={1500} hi={1600} color="var(--amber)" dp={0}/>
+                <ParamRow name="Mould Level" value={data.mouldLevel} unit="mm" lo={120} hi={170} color="var(--blue)" dp={0}/>
+                <ParamRow name="Casting Speed" value={data.castSpeed} unit="m/min" lo={1.0} hi={2.0} color="var(--blue)" dp={2}/>
+                <ParamRow name="Mould Oil Flow" value={useWave(3.2,2.8,3.8,.08)} unit="L/min" lo={2} hi={5} color="var(--green)" dp={1}/>
+                <ParamRow name="Breakout Risk" value={useWave(4,2,18,2)} unit="%" lo={0} hi={100} color="var(--red)" dp={0}/>
+                <ParamRow name="Superheat" value={useWave(29,18,38,2)} unit="°C" lo={0} hi={50} color="var(--amber)" dp={0}/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{width:270,flexShrink:0,display:'flex',flexDirection:'column',gap:12}}>
+          <div className="card">
+            <div className="card-header"><div className="card-title"><span className="badge badge-q">Q</span>Heat Info</div></div>
+            <div className="card-body">
+              {[{l:'Heat No.',v:'#2847'},{l:'Grade',v:'B500B'},{l:'Section',v:'130×130mm'},{l:'Length',v:'12.2m'},{l:'Strands',v:'3 / 3'},{l:'Elapsed',v:'00:44:12'}].map(r=>(
+                <div key={r.l} style={{display:'flex',justifyContent:'space-between',padding:'7px 0',borderBottom:'1px solid var(--border)'}}><span style={{fontSize:11,color:'var(--text-dim)'}}>{r.l}</span><span style={{fontFamily:'var(--mono)',fontSize:11,color:'var(--text-mid)'}}>{r.v}</span></div>
+              ))}
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-header"><div className="card-title"><span className="badge badge-q">Q</span>Breakout Indicators</div></div>
+            <div className="card-body">
+              {[{l:'Sticker Alarm',v:'None',c:'var(--green)'},{l:'Friction Index',v:'Normal',c:'var(--green)'},{l:'Shell Thickness',v:'28.4mm',c:'var(--blue)'},{l:'Mould ΔTemp',v:'±3.2°C',c:'var(--text-mid)'}].map(r=>(
+                <div key={r.l} style={{display:'flex',justifyContent:'space-between',padding:'8px 0',borderBottom:'1px solid var(--border)'}}><span style={{fontSize:11,color:'var(--text-dim)'}}>{r.l}</span><span style={{fontFamily:'var(--mono)',fontSize:11,fontWeight:600,color:r.c}}>{r.v}</span></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+  if(sub==='NLP Analytics') return (
+    <div className="content">
+      <div className="card">
+        <div className="card-header"><div className="card-title"><span className="badge badge-ai">AI · NLP</span>Natural Language Process Analytics</div><div style={{fontSize:10,color:'var(--text-dim)'}}>Query your process in plain English</div></div>
+        <div className="card-body"><NLPPanel/></div>
+      </div>
+      <div className="card">
+        <div className="card-header"><div className="card-title"><span className="badge badge-q">Q</span>Recent Queries</div></div>
+        <div className="card-body">
+          {[{q:'Show mould level variation for last 3 heats',t:'02:11',u:'Ops Shift A'},{q:'What caused the temperature spike at 01:12?',t:'01:55',u:'QA Engineer'},{q:'Predict defect probability for next 2 heats',t:'01:30',u:'ML System'},{q:'Compare EAF energy consumption week over week',t:'00:45',u:'Plant Manager'}].map(r=>(
+            <div key={r.q} style={{display:'flex',alignItems:'center',gap:12,padding:'9px 0',borderBottom:'1px solid var(--border)'}}>
+              <div style={{fontSize:14,color:'var(--blue)',flexShrink:0}}>⌘</div>
+              <div style={{flex:1}}><div style={{fontSize:11,color:'var(--text-mid)'}}>{r.q}</div><div style={{fontSize:10,color:'var(--text-dim)',marginTop:2}}>{r.u} · {r.t} ago</div></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+  if(sub==='Time-Series Prediction') return (
+    <div className="content">
+      <div className="card">
+        <div className="card-header"><div className="card-title"><span className="badge badge-q">Q</span>Tundish Temperature — Actual vs Predicted</div><div className="live-chip"><div className="ldot"/>LIVE</div></div>
+        <div className="card-body">
+          <div style={{display:'flex',gap:16,marginBottom:8}}>
+            {[{l:'Actual',c:'var(--blue)',dash:false},{l:'Predicted',c:'var(--blue)',dash:true}].map(l=>(
+              <div key={l.l} style={{display:'flex',alignItems:'center',gap:5,fontSize:10,color:'var(--text-dim)'}}>
+                <div style={{width:20,height:2,background:l.c,opacity:l.dash?.5:1,borderTop:l.dash?'2px dashed var(--blue)':'none'}}/>
+                {l.l}
+              </div>
+            ))}
+          </div>
+          <Sparkline data={tSpark} color="var(--blue)" h={80} predicted={pred}/>
+          <div className="grid4" style={{marginTop:12}}>
+            {[{l:'Current',v:`${data.tundishTemp.toFixed(0)}°C`},{l:'Predicted (15m)',v:'1548°C'},{l:'MAPE',v:'0.8%',c:'var(--green)'},{l:'Horizon',v:'60 min'}].map(m=>(
+              <div key={m.l} style={{background:'var(--bg3)',border:'1px solid var(--border)',borderRadius:6,padding:'9px 11px'}}><div style={{fontSize:9,color:'var(--text-dim)',marginBottom:4}}>{m.l}</div><div style={{fontFamily:'var(--mono)',fontSize:13,fontWeight:600,color:m.c||'var(--text-mid)'}}>{m.v}</div></div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        {[1,2,3].map(s=>{
+          const sp=useSpark(1.4+s*.04,40,1.2,1.8,.04);
+          const pr=Array.from({length:10},(_,i)=>clamp(sp[sp.length-1]+(Math.random()-.47)*.025*i,1.2,1.8));
+          return (<div key={s} className="card col">
+            <div className="card-header"><div className="card-title"><span className="badge badge-q">Q</span>Strand {s} Forecast</div></div>
+            <div className="card-body">
+              <Sparkline data={sp} color="var(--blue)" h={50} predicted={pr}/>
+              <div style={{display:'flex',justifyContent:'space-between',marginTop:8}}>
+                <div><div style={{fontSize:9,color:'var(--text-dim)'}}>ACTUAL</div><div style={{fontFamily:'var(--mono)',fontSize:14,color:'var(--blue)'}}>{sp[sp.length-1].toFixed(2)} m/m</div></div>
+                <div><div style={{fontSize:9,color:'var(--text-dim)'}}>FORECAST</div><div style={{fontFamily:'var(--mono)',fontSize:14,color:'oklch(65% 0.15 248deg)'}}>{pr[pr.length-1].toFixed(2)} m/m</div></div>
+              </div>
+            </div>
+          </div>);
+        })}
+      </div>
+    </div>
+  );
+  return null;
+}
+
+/* ── EAF (E) ── */
+function EAFView({sub,data}) {
+  const eSpark=useSpark(408,40,380,440,2.5);
+  const aSpark=useSpark(87,40,72,98,1.5);
+  if(sub==='Energy Optimization') return (
+    <div className="content">
+      <div className="row">
+        <div className="col">
+          <div className="card">
+            <div className="card-header"><div className="card-title"><span className="badge badge-e">E</span>Power Curve — kWh/ton</div><div className="live-chip"><div className="ldot"/>LIVE</div></div>
+            <div className="card-body">
+              <div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><span style={{fontSize:11,color:'var(--text-dim)'}}>Target: 390 kWh/ton</span><span style={{fontFamily:'var(--mono)',fontSize:13,color:data.eafKwh>400?'var(--amber)':'var(--green)',fontWeight:600}}>{data.eafKwh.toFixed(0)} kWh/t</span></div>
+              <Sparkline data={eSpark} color="var(--amber)" h={72}/>
+              <div className="grid4" style={{marginTop:10}}>
+                {[{l:'Target',v:'390 kWh/t'},{l:'Actual',v:`${data.eafKwh.toFixed(0)} kWh/t`,c:data.eafKwh<400?'var(--green)':'var(--amber)'},{l:'Delta',v:`+${(data.eafKwh-390).toFixed(0)} kWh`,c:'var(--amber)'},{l:'Cost Impact',v:`+$${((data.eafKwh-390)*.08).toFixed(0)}/t`}].map(m=>(
+                  <div key={m.l} style={{background:'var(--bg3)',border:'1px solid var(--border)',borderRadius:6,padding:'9px 11px'}}><div style={{fontSize:9,color:'var(--text-dim)',marginBottom:3}}>{m.l}</div><div style={{fontFamily:'var(--mono)',fontSize:12,fontWeight:600,color:m.c||'var(--text-mid)'}}>{m.v}</div></div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-header"><div className="card-title"><span className="badge badge-e">E</span>EAF Process Diagram</div></div>
+            <div className="card-body">
+              <ProcessImage src="assets/pptx_image4.png" alt="EAF Steelmaking Diagram" caption="Electric Arc Furnace — Inputs, Process & Outputs"/>
+            </div>
+          </div>
+        </div>
+        <div style={{width:270,flexShrink:0,display:'flex',flexDirection:'column',gap:12}}>
+          <div className="card">
+            <div className="card-header"><div className="card-title"><span className="badge badge-e">E</span>Energy Balance</div></div>
+            <div className="card-body">
+              <ProcessImage src="assets/pptx_image5.png" alt="EAF Energy Balance" caption="Total 694 kWh/t energy balance breakdown"/>
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-header"><div className="card-title"><span className="badge badge-ai">AI</span>Recommendations</div></div>
+            <div className="card-body" style={{display:'flex',flexDirection:'column',gap:7}}>
+              {[{t:'Adjust Power Curve',d:'Reduce Main Melt by 8%. Saving: 14 kWh/t',sev:'crit'},{t:'Charge Mix',d:'Increase DRI to 72%. Better conductivity.',sev:'warn'},{t:'Electrode Position',d:'+12mm — reduces arc wander Phase B',sev:'info'}].map(r=>(
+                <div key={r.t} style={{padding:'9px 11px',borderRadius:6,background:'rgba(255,255,255,0.02)',border:`1px solid ${r.sev==='crit'?'rgba(255,165,40,.25)':'rgba(50,110,255,.18)'}`}}>
+                  <div style={{fontSize:11,fontWeight:700,color:r.sev==='crit'?'var(--amber)':'var(--text)',marginBottom:3}}>{r.t}</div>
+                  <div style={{fontSize:10,color:'var(--text-dim)',lineHeight:1.5}}>{r.d}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+  if(sub==='Arc Stability') return (
+    <div className="content">
+      <div className="card">
+        <div className="card-header"><div className="card-title"><span className="badge badge-e">E</span>Arc Stability — 3-Phase Monitor</div><div className="live-chip"><div className="ldot"/>LIVE</div></div>
+        <div className="card-body">
+          <div className="gauge-row" style={{marginBottom:14}}><ArcGauge value={useWave(89,76,98,2)} max={100} color="var(--green)" size={88} label="Phase A" unit="%"/><ArcGauge value={useWave(82,68,96,3)} max={100} color="var(--amber)" size={88} label="Phase B" unit="%"/><ArcGauge value={useWave(91,78,99,2)} max={100} color="var(--green)" size={88} label="Phase C" unit="%"/></div>
+          <Sparkline data={aSpark} color="var(--amber)" h={55}/>
+          <div className="grid3" style={{marginTop:10}}>
+            {[{l:'Voltage Fluct.',v:'±8.2%',c:'var(--amber)'},{l:'Arc Length',v:'12.4mm'},{l:'THD',v:'4.2%'},{l:'Breakage Risk',v:'Low',c:'var(--green)'},{l:'Impedance',v:'Normal',c:'var(--green)'},{l:'Reactive Pwr',v:'18 MVAr'}].map(m=>(
+              <div key={m.l} style={{background:'var(--bg3)',border:'1px solid var(--border)',borderRadius:6,padding:'9px 11px'}}><div style={{fontSize:9,color:'var(--text-dim)',marginBottom:3}}>{m.l}</div><div style={{fontFamily:'var(--mono)',fontSize:13,fontWeight:600,color:m.c||'var(--text-mid)'}}>{m.v}</div></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+  if(sub==='Charge Mix') return (
+    <div className="content">
+      <div className="card">
+        <div className="card-header"><div className="card-title"><span className="badge badge-e">E</span>Charge Mix — Current vs AI Recommended</div></div>
+        <div className="card-body">
+          {[{mat:'DRI',cur:68,rec:72,col:'var(--green)'},{mat:'Scrap (Heavy)',cur:22,rec:18,col:'var(--amber)'},{mat:'Scrap (Light)',cur:8,rec:8,col:'var(--text-mid)'},{mat:'Hot Metal',cur:2,rec:2,col:'var(--purple)'}].map(m=>(
+            <div key={m.mat} style={{marginBottom:14}}>
+              <div style={{display:'flex',justifyContent:'space-between',marginBottom:5}}><span style={{fontSize:11,fontWeight:600,color:m.col}}>{m.mat}</span><span style={{fontSize:11,color:'var(--text-dim)'}}>Now: <span style={{fontFamily:'var(--mono)',color:'var(--text-mid)'}}>{m.cur}%</span> → AI: <span style={{fontFamily:'var(--mono)',color:m.col}}>{m.rec}%</span></span></div>
+              <div style={{display:'flex',gap:3,alignItems:'center'}}><div style={{flex:m.cur,height:7,background:m.col,borderRadius:'3px 0 0 3px',opacity:.7}}/><div style={{flex:100-m.cur,height:7,background:'rgba(255,255,255,0.04)',borderRadius:'0 3px 3px 0'}}/></div>
+            </div>
+          ))}
+          <div style={{marginTop:10,padding:'11px 13px',background:'var(--amber-lo)',border:'1px solid rgba(255,165,40,.2)',borderRadius:7,fontSize:11,color:'var(--text-mid)'}}>
+            <span style={{color:'var(--amber)',fontWeight:600}}>AI Recommendation:</span> 72% DRI → save 14 kWh/ton, reduce tap-to-tap by 2.5 min.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+  if(sub==='Tap-to-Tap') return (
+    <div className="content">
+      <div className="grid3">
+        {[{l:'Current Heat',v:`${data.tapTime.toFixed(0)}m`,sub:'Heat #2847',c:'var(--amber)'},{l:'Target',v:'42m',sub:'Optimal',c:'var(--green)'},{l:'Weekly Avg',v:'45.8m',sub:'-3.2m vs last wk',c:'var(--blue)'}].map(m=>(
+          <div key={m.l} className="metric-box"><div className="metric-label">{m.l}</div><div className="metric-val" style={{color:m.c,fontSize:28}}>{m.v}</div><div className="metric-sub ok">{m.sub}</div></div>
+        ))}
+      </div>
+      <div className="card">
+        <div className="card-header"><div className="card-title"><span className="badge badge-e">E</span>Last 8 Heats</div></div>
+        <div className="card-body">
+          {[45,48,44,47,42,46,43,data.tapTime].map((t,i)=>(
+            <div key={i} style={{display:'flex',alignItems:'center',gap:10,marginBottom:8}}>
+              <span style={{fontFamily:'var(--mono)',fontSize:10,color:'var(--text-dim)',width:60}}>#{2847-7+i}</span>
+              <div style={{flex:1,height:5,background:'rgba(255,255,255,0.05)',borderRadius:3}}><div style={{height:'100%',width:`${(t/55)*100}%`,background:t<44?'var(--green)':t>47?'var(--red)':'var(--amber)',borderRadius:3}}/></div>
+              <span style={{fontFamily:'var(--mono)',fontSize:11,width:35,textAlign:'right',color:t<44?'var(--green)':t>47?'var(--red)':'var(--amber)'}}>{Math.round(t)}m</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+  if(sub==='Predictive Maintenance') return (
+    <div className="content">
+      <div className="grid2">
+        {[{n:'Electrode Set A',h:82,s:'8h 20m'},{n:'Electrode Set B',h:32,s:'3h 40m',crit:true},{n:'Transformer T1',h:94,s:'72h'},{n:'Transformer T2',h:88,s:'48h'},{n:'Furnace Lining',h:67,s:'12h',warn:true},{n:'Water Cooling',h:96,s:'120h'}].map(c=>{
+          const col=c.h>80?'var(--green)':c.h>50?'var(--amber)':'var(--red)';
+          return (<div key={c.n} className="card"><div className="card-header"><div className="card-title"><span className="badge badge-e">E</span>{c.n}</div><div style={{fontFamily:'var(--mono)',fontSize:11,color:col}}>{c.h}%</div></div><div className="card-body"><div style={{height:5,background:'rgba(255,255,255,.05)',borderRadius:3,marginBottom:9}}><div style={{height:'100%',width:`${c.h}%`,background:col,borderRadius:3}}/></div><div style={{display:'flex',justifyContent:'space-between'}}><span style={{fontSize:10,color:'var(--text-dim)'}}>Next Service</span><span style={{fontFamily:'var(--mono)',fontSize:10,color:'var(--text-mid)'}}>{c.s}</span></div></div></div>);
+        })}
+      </div>
+    </div>
+  );
+  return null;
+}
+
+/* ── DRI (G) ── */
+function DRIView({sub,data}) {
+  const gSpark=useSpark(28400,40,26000,31000,200);
+  const mSpark=useSpark(92.3,40,88,96,.3);
+  if(sub==='Gas Consumption') return (
+    <div className="content">
+      <div className="row">
+        <div className="col">
+          <div className="card">
+            <div className="card-header"><div className="card-title"><span className="badge badge-g">G</span>Natural Gas Flow — Real-time</div><div className="live-chip"><div className="ldot"/>LIVE</div></div>
+            <div className="card-body">
+              <div style={{display:'flex',justifyContent:'space-between',marginBottom:8}}><span style={{fontSize:11,color:'var(--text-dim)'}}>Optimal: 26,500–29,000 Nm³/h</span><span style={{fontFamily:'var(--mono)',fontSize:13,color:'var(--green)',fontWeight:600}}>{data.gasFlow.toLocaleString()} Nm³/h</span></div>
+              <Sparkline data={gSpark} color="var(--green)" h={72}/>
+              <div className="grid4" style={{marginTop:10}}>
+                {[{l:'Gas/Iron Ratio',v:'1.42'},{l:'Reduction Eff.',v:`${useWave(91,87,95,.3).toFixed(1)}%`,c:'var(--green)'},{l:'Daily Usage',v:'682k Nm³'},{l:'Cost/Ton',v:'$18.40'}].map(m=>(
+                  <div key={m.l} style={{background:'var(--bg3)',border:'1px solid var(--border)',borderRadius:6,padding:'9px 11px'}}><div style={{fontSize:9,color:'var(--text-dim)',marginBottom:3}}>{m.l}</div><div style={{fontFamily:'var(--mono)',fontSize:12,fontWeight:600,color:m.c||'var(--text-mid)'}}>{m.v}</div></div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-header"><div className="card-title"><span className="badge badge-g">G</span>DRI Process Diagram</div></div>
+            <div className="card-body">
+              <ProcessImage src="assets/pptx_image3.png" alt="DRI Process Flow Diagram" caption="Direct Reduced Iron — HYTEMP System with Gas Reduction Circuit"/>
+            </div>
+          </div>
+        </div>
+        <div style={{width:270,flexShrink:0,display:'flex',flexDirection:'column',gap:12}}>
+          <div className="card">
+            <div className="card-header"><div className="card-title"><span className="badge badge-g">G</span>Zone Efficiency</div></div>
+            <div className="card-body">
+              {[{z:'Reduction Zone',p:useWave(88,82,96,1),t:90},{z:'Transition Zone',p:useWave(92,86,98,1),t:88},{z:'Cooling Zone',p:useWave(79,72,91,2),t:82}].map(z=>{
+                const col=z.p>=z.t?'var(--green)':'var(--amber)';
+                return (<div key={z.z} style={{marginBottom:12}}>
+                  <div style={{display:'flex',justifyContent:'space-between',marginBottom:4}}><span style={{fontSize:11,fontWeight:600}}>{z.z}</span><span style={{fontFamily:'var(--mono)',fontSize:11,color:col}}>{z.p.toFixed(1)}%</span></div>
+                  <div style={{height:5,background:'rgba(255,255,255,.05)',borderRadius:3}}><div style={{height:'100%',width:`${z.p}%`,background:col,borderRadius:3}}/></div>
+                </div>);
+              })}
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-header"><div className="card-title"><span className="badge badge-ai">AI</span>Recommendations</div></div>
+            <div className="card-body" style={{display:'flex',flexDirection:'column',gap:7}}>
+              {[{t:'Reduce Gas Flow',d:'1.4% above optimal. Cut 380 Nm³/h. Save $2.10/ton.',sev:'warn'},{t:'Zone 3 Pressure',d:'0.61 bar — above limit. Check flow restriction.',sev:'crit'},{t:'Carbon Injection',d:'Increase 0.05% to sustain metallization >92%.',sev:'info'}].map(r=>(
+                <div key={r.t} style={{padding:'9px 11px',borderRadius:6,background:'rgba(255,255,255,0.02)',border:`1px solid ${r.sev==='crit'?'rgba(255,60,50,.2)':r.sev==='warn'?'rgba(255,165,40,.2)':'rgba(50,200,110,.2)'}`}}>
+                  <div style={{fontSize:11,fontWeight:700,color:r.sev==='crit'?'var(--red)':r.sev==='warn'?'var(--amber)':'var(--green)',marginBottom:3}}>{r.t}</div>
+                  <div style={{fontSize:10,color:'var(--text-dim)',lineHeight:1.5}}>{r.d}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+  if(sub==='Metallization Prediction') return (
+    <div className="content">
+      <div className="card">
+        <div className="card-header"><div className="card-title"><span className="badge badge-g">G</span>Metallization % — Actual vs Predicted</div><div className="live-chip"><div className="ldot"/>LIVE</div></div>
+        <div className="card-body">
+          <Sparkline data={mSpark} color="var(--green)" h={72} predicted={Array.from({length:12},(_,i)=>clamp(data.metallization+(Math.random()-.46)*.2*i,88,96))}/>
+          <div className="grid3" style={{marginTop:12}}>
+            {[{l:'Current',v:`${data.metallization.toFixed(1)}%`,c:'var(--green)'},{l:'Target',v:'>91%'},{l:'Forecast 1h',v:'93.1%',c:'var(--green)'},{l:'Confidence',v:'96.4%'},{l:'Iron Ore Fe',v:'65.2%'},{l:'Reduction Time',v:'5.8 hrs'}].map(m=>(
+              <div key={m.l} style={{background:'var(--bg3)',border:'1px solid var(--border)',borderRadius:6,padding:'9px 11px'}}><div style={{fontSize:9,color:'var(--text-dim)',marginBottom:3}}>{m.l}</div><div style={{fontFamily:'var(--mono)',fontSize:13,fontWeight:600,color:m.c||'var(--text-mid)'}}>{m.v}</div></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+  if(sub==='Temperature Profile') return (
+    <div className="content">
+      <div className="card">
+        <div className="card-header"><div className="card-title"><span className="badge badge-g">G</span>Reduction Zone Temperature Profile</div><div className="live-chip"><div className="ldot"/>LIVE</div></div>
+        <div className="card-body">
+          {[{z:'Zone 1 (Top)',t:useWave(820,790,860,4),tgt:840},{z:'Zone 2 (Mid)',t:useWave(890,860,930,4),tgt:910},{z:'Zone 3 (Bot)',t:useWave(956,920,990,5),tgt:975},{z:'Cooling Zone',t:useWave(430,400,470,6),tgt:440}].map(z=>{
+            const dev=Math.abs(z.t-z.tgt);const col=dev<10?'var(--green)':dev<20?'var(--amber)':'var(--red)';
+            return (<div key={z.z} style={{display:'flex',alignItems:'center',gap:12,padding:'10px 0',borderBottom:'1px solid var(--border)'}}>
+              <div style={{width:110,fontSize:11,color:'var(--text-mid)',flexShrink:0}}>{z.z}</div>
+              <div style={{flex:1,height:7,background:'rgba(255,255,255,.05)',borderRadius:3,position:'relative'}}>
+                <div style={{position:'absolute',left:`${(z.tgt-350)/(1100-350)*100}%`,top:-1,width:2,height:9,background:'rgba(255,255,255,.2)',borderRadius:1}}/>
+                <div style={{height:'100%',width:`${(z.t-350)/(1100-350)*100}%`,background:col,borderRadius:3}}/>
+              </div>
+              <div style={{fontFamily:'var(--mono)',fontSize:13,fontWeight:600,color:col,width:65,textAlign:'right'}}>{z.t.toFixed(0)}°C</div>
+              <div style={{fontSize:10,color:'var(--text-dim)',width:60,textAlign:'right'}}>tgt {z.tgt}°C</div>
+            </div>);
+          })}
+        </div>
+      </div>
+    </div>
+  );
+  if(sub==='Process Yield') return (
+    <div className="content">
+      <div className="grid3">
+        {[{l:'Current Yield',v:`${data.yieldPct.toFixed(1)}%`,c:'var(--green)',s:'↑ +0.3% vs avg'},{l:'Waste Rate',v:'5.8%',c:'var(--amber)',s:'↓ -0.2% improvement'},{l:'Output Rate',v:'142 t/h',c:'var(--text-mid)',s:'Target: 145 t/h'}].map(m=>(
+          <div key={m.l} className="metric-box"><div className="metric-label">{m.l}</div><div className="metric-val" style={{color:m.c,fontSize:28}}>{m.v}</div><div className="metric-sub ok">{m.s}</div></div>
+        ))}
+      </div>
+      <div className="card">
+        <div className="card-header"><div className="card-title"><span className="badge badge-g">G</span>Yield Components</div></div>
+        <div className="card-body">
+          <ParamRow name="Iron Input" value={useWave(148,140,158,2)} unit="t" lo={130} hi={170} color="var(--green)" dp={0}/>
+          <ParamRow name="DRI Output" value={useWave(138,132,148,2)} unit="t" lo={120} hi={160} color="var(--green)" dp={0}/>
+          <ParamRow name="Unreacted Ore" value={useWave(4.8,3,9,.3)} unit="t" lo={0} hi={15} color="var(--amber)" dp={1}/>
+          <ParamRow name="Fines Loss" value={useWave(2.1,1,4,.15)} unit="t" lo={0} hi={10} color="var(--red)" dp={1}/>
+        </div>
+      </div>
+    </div>
+  );
+  if(sub==='Anomaly Detection') return (
+    <div className="content">
+      <div className="card">
+        <div className="card-header"><div className="card-title"><span className="badge badge-ai">AI · ML</span>DRI Anomaly Detection</div><div className="live-chip"><div className="ldot"/>MONITORING</div></div>
+        <div className="card-body">
+          {[{p:'Gas Flow',st:'normal',v:'28,400 Nm³/h',sc:.08},{p:'Zone 3 Pressure',st:'anomaly',v:'0.61 bar ↑',sc:.74},{p:'Metallization',st:'normal',v:'92.4%',sc:.12},{p:'Zone 3 Temp',st:'warning',v:'956°C (−8°C)',sc:.41},{p:'Carbon Content',st:'normal',v:'1.8%',sc:.15},{p:'Gas/Iron Ratio',st:'normal',v:'1.42',sc:.09}].map(a=>{
+            const col=a.st==='anomaly'?'var(--red)':a.st==='warning'?'var(--amber)':'var(--green)';
+            return (<div key={a.p} style={{display:'flex',alignItems:'center',gap:12,padding:'9px 0',borderBottom:'1px solid var(--border)'}}>
+              <div style={{width:8,height:8,borderRadius:2,background:col,flexShrink:0}}/>
+              <div style={{flex:1,fontSize:11,color:'var(--text-mid)'}}>{a.p}</div>
+              <div style={{fontFamily:'var(--mono)',fontSize:11,color:col,width:130,textAlign:'right'}}>{a.v}</div>
+              <div style={{width:70}}><div style={{height:4,background:'rgba(255,255,255,.05)',borderRadius:2}}><div style={{height:'100%',width:`${a.sc*100}%`,background:col,borderRadius:2}}/></div><div style={{fontSize:9,color:'var(--text-dim)',textAlign:'right',marginTop:2}}>{(a.sc*100).toFixed(0)}%</div></div>
+            </div>);
+          })}
+        </div>
+      </div>
+    </div>
+  );
+  return null;
+}
+
+/* ══════════════════════════════════════════════
+   ADMIN VIEWS
+══════════════════════════════════════════════ */
+const ADMIN_SUBS = ['User Management','AI Model Config','Data Sources','Self-Support'];
+
+function AdminView({sub, currentUser}) {
+  if(sub==='User Management') return <UserManagement currentUser={currentUser}/>;
+  if(sub==='AI Model Config') return <AIModelConfig/>;
+  if(sub==='Data Sources') return <DataSources/>;
+  if(sub==='Self-Support') return <SelfSupport/>;
+  return null;
+}
+
+function UserManagement({currentUser}) {
+  const [users,setUsers]=useState([
+    {id:1,name:'Khalid Al Mazrouei',email:'admin@emsteel.ae',role:'super_admin',dept:'IT & Systems',status:'active',last:'2 min ago'},
+    {id:2,name:'Sarah Johnson',email:'manager@emsteel.ae',role:'plant_manager',dept:'Operations',status:'active',last:'14 min ago'},
+    {id:3,name:'Ahmed Hassan',email:'castx@emsteel.ae',role:'castx_operator',dept:'Casting',status:'active',last:'1 hr ago'},
+    {id:4,name:'Ravi Kumar',email:'eaf@emsteel.ae',role:'eaf_operator',dept:'Steelmaking',status:'active',last:'3 hrs ago'},
+    {id:5,name:'Fatima Al Ali',email:'dri@emsteel.ae',role:'dri_operator',dept:'Reduction',status:'active',last:'Today'},
+    {id:6,name:'Omar Nasser',email:'omar@emsteel.ae',role:'castx_operator',dept:'Casting',status:'inactive',last:'3 days ago'},
+  ]);
+  const [showModal,setShowModal]=useState(false);
+  const [newUser,setNewUser]=useState({name:'',email:'',role:'castx_operator',dept:'',status:'active'});
+  const roleColors={'super_admin':'var(--purple)','plant_manager':'var(--blue)','castx_operator':'var(--blue)','eaf_operator':'var(--amber)','dri_operator':'var(--green)'};
+  return (
+    <div className="content">
+      <div className="card">
+        <div className="card-header">
+          <div className="card-title"><span className="badge badge-ad">ADMIN</span>User Management</div>
+          <button className="action-btn btn-primary" onClick={()=>setShowModal(true)}>+ Onboard User</button>
+        </div>
+        <div className="card-body" style={{padding:0}}>
+          <table className="admin-table" style={{width:'100%'}}>
+            <thead><tr><th>User</th><th>Role</th><th>Department</th><th>Status</th><th>Last Active</th><th>Actions</th></tr></thead>
+            <tbody>
+              {users.map(u=>(
+                <tr key={u.id}>
+                  <td>
+                    <div style={{display:'flex',alignItems:'center',gap:10}}>
+                      <div style={{width:30,height:30,borderRadius:7,background:`${roleColors[u.role]}22`,border:`1px solid ${roleColors[u.role]}44`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:700,color:roleColors[u.role]}}>
+                        {u.name.split(' ').map(n=>n[0]).join('').substring(0,2)}
+                      </div>
+                      <div><div style={{fontSize:11,fontWeight:600,color:'var(--text)'}}>{u.name}</div><div style={{fontSize:10,color:'var(--text-dim)'}}>{u.email}</div></div>
+                    </div>
+                  </td>
+                  <td><span className="role-badge" style={{background:`${roleColors[u.role]}18`,color:roleColors[u.role],border:`1px solid ${roleColors[u.role]}33`,borderRadius:3,padding:'2px 7px',fontSize:9,fontWeight:700}}>{ROLE_LABELS[u.role]}</span></td>
+                  <td>{u.dept}</td>
+                  <td><span className={`role-badge ${u.status==='active'?'status-active':'status-inactive'}`}>{u.status}</span></td>
+                  <td style={{fontFamily:'var(--mono)',fontSize:10}}>{u.last}</td>
+                  <td>
+                    <div style={{display:'flex',gap:5}}>
+                      <button className="action-btn btn-primary">Edit</button>
+                      {u.id!==currentUser.id&&<button className="action-btn btn-danger" onClick={()=>setUsers(prev=>prev.map(x=>x.id===u.id?{...x,status:x.status==='active'?'inactive':'active'}:x))}>{u.status==='active'?'Disable':'Enable'}</button>}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {showModal&&(
+        <div className="modal-overlay" onClick={e=>e.target===e.currentTarget&&setShowModal(false)}>
+          <div className="modal">
+            <div className="modal-header"><div style={{fontSize:14,fontWeight:700}}>Onboard New User</div><button className="modal-close" onClick={()=>setShowModal(false)}>×</button></div>
+            <div className="modal-body" style={{display:'flex',flexDirection:'column',gap:12}}>
+              {[{l:'Full Name',k:'name',ph:'e.g. Mohammed Al Rashid',t:'text'},{l:'Email Address',k:'email',ph:'e.g. user@emsteel.ae',t:'email'},{l:'Department',k:'dept',ph:'e.g. Steelmaking',t:'text'}].map(f=>(
+                <div key={f.k} className="form-group" style={{marginBottom:0}}>
+                  <label className="form-label">{f.l}</label>
+                  <input className="form-input" type={f.t} placeholder={f.ph} value={newUser[f.k]} onChange={e=>setNewUser(p=>({...p,[f.k]:e.target.value}))}/>
+                </div>
+              ))}
+              <div className="form-group" style={{marginBottom:0}}>
+                <label className="form-label">Role</label>
+                <select className="form-select" value={newUser.role} onChange={e=>setNewUser(p=>({...p,role:e.target.value}))}>
+                  {Object.entries(ROLE_LABELS).map(([k,v])=><option key={k} value={k}>{v}</option>)}
+                </select>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="action-btn" style={{padding:'8px 16px',background:'rgba(255,255,255,0.05)',border:'1px solid var(--border)',borderRadius:6,color:'var(--text-dim)',cursor:'pointer',fontSize:12}} onClick={()=>setShowModal(false)}>Cancel</button>
+              <button className="action-btn btn-primary" style={{padding:'8px 18px',fontSize:12}} onClick={()=>{
+                if(!newUser.name||!newUser.email) return;
+                setUsers(p=>[...p,{id:Date.now(),...newUser,last:'Just now'}]);
+                setShowModal(false);setNewUser({name:'',email:'',role:'castx_operator',dept:'',status:'active'});
+              }}>Onboard User</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AIModelConfig() {
+  const [saved,setSaved]=useState(false);
+  const [cfg,setCfg]=useState({endpoint:'https://api.zealogics.ai/v1/steeliq',apiKey:'sk-zeal-••••••••••••••••••••••••••••••',model:'steeliq-ml-v2.1',timeout:'30',maxTokens:'2048',temperature:'0.3',nlpModel:'steeliq-nlp-v1.4',nlpEndpoint:'https://api.zealogics.ai/v1/nlp'});
+  return (
+    <div className="content">
+      <div className="card">
+        <div className="card-header"><div className="card-title"><span className="badge badge-ad">ADMIN</span>AI Model Configuration</div><button className="action-btn btn-success" onClick={()=>{setSaved(true);setTimeout(()=>setSaved(false),3000)}}>{saved?'✓ Saved':'Save Config'}</button></div>
+        <div className="card-body">
+          <div style={{fontSize:10,color:'var(--text-dim)',marginBottom:12,textTransform:'uppercase',letterSpacing:1,fontWeight:700}}>Predictive ML Engine</div>
+          {[{l:'Model Endpoint URL',k:'endpoint',t:'url'},{l:'API Key',k:'apiKey',t:'password'},{l:'Model Version',k:'model',t:'text'},{l:'Request Timeout (s)',k:'timeout',t:'number'},{l:'Max Tokens',k:'maxTokens',t:'number'},{l:'Temperature',k:'temperature',t:'number'}].map(f=>(
+            <div key={f.k} className="config-row">
+              <div className="config-label">{f.l}</div>
+              <input className={`config-input${f.t==='password'?' masked':''}`} type={f.t==='password'?'text':f.t} value={cfg[f.k]} onChange={e=>setCfg(p=>({...p,[f.k]:e.target.value}))}/>
+              {f.k==='endpoint'&&<button className="action-btn btn-primary" onClick={()=>{}}>Test</button>}
+            </div>
+          ))}
+          <div style={{fontSize:10,color:'var(--text-dim)',marginTop:18,marginBottom:12,textTransform:'uppercase',letterSpacing:1,fontWeight:700}}>NLP Query Engine</div>
+          {[{l:'NLP Model',k:'nlpModel',t:'text'},{l:'NLP Endpoint',k:'nlpEndpoint',t:'url'}].map(f=>(
+            <div key={f.k} className="config-row">
+              <div className="config-label">{f.l}</div>
+              <input className="config-input" type={f.t} value={cfg[f.k]} onChange={e=>setCfg(p=>({...p,[f.k]:e.target.value}))}/>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DataSources() {
+  const [testing,setTesting]=useState({});
+  const [statuses,setStatuses]=useState({iba:'connected',l2:'connected',danieli:'warning',erp:'disconnected'});
+  const ds=[{id:'iba',name:'IBA Data System',desc:'Real-time sensor data acquisition from IBA process historian',type:'Time-Series DB',host:'iba-server.emsteel.ae:5432'},{id:'l2',name:'Level 2 Systems',desc:'L2 automation and control system data integration',type:'OPC-UA',host:'l2-opc.emsteel.ae:4840'},{id:'danieli',name:'Danieli Applications',desc:'Danieli automation platform — casting machine data',type:'REST API',host:'danieli-api.emsteel.ae:8443'},{id:'erp',name:'SAP ERP',desc:'Enterprise resource planning — production orders & planning',type:'SAP RFC',host:'sap.emsteel.ae:3300'}];
+  const cols={connected:'var(--green)',warning:'var(--amber)',disconnected:'var(--red)'};
+  const test=(id)=>{
+    setTesting(p=>({...p,[id]:true}));
+    setTimeout(()=>{
+      setTesting(p=>({...p,[id]:false}));
+      setStatuses(p=>({...p,[id]:id==='erp'?'warning':'connected'}));
+    },2000+Math.random()*1000);
+  };
+  return (
+    <div className="content">
+      <div className="grid2">
+        {ds.map(d=>{
+          const st=statuses[d.id];const isTesting=testing[d.id];
+          return (<div key={d.id} className="card">
+            <div className="card-header">
+              <div className="card-title"><span className="badge badge-ad">DS</span>{d.name}</div>
+              <div className="ds-status" style={{color:cols[st]}}><div style={{width:7,height:7,borderRadius:'50%',background:cols[st],animation:st==='connected'?'pgn 2s infinite':undefined}}/>{isTesting?'Testing...':st.charAt(0).toUpperCase()+st.slice(1)}</div>
+            </div>
+            <div className="card-body" style={{display:'flex',flexDirection:'column',gap:8}}>
+              <div style={{fontSize:11,color:'var(--text-dim)',lineHeight:1.5}}>{d.desc}</div>
+              {[{l:'Type',v:d.type},{l:'Host',v:d.host},{l:'Last Sync',v:st==='disconnected'?'N/A':'12s ago'}].map(r=>(
+                <div key={r.l} style={{display:'flex',justifyContent:'space-between',fontSize:11}}><span style={{color:'var(--text-dim)'}}>{r.l}</span><span style={{fontFamily:'var(--mono)',color:'var(--text-mid)'}}>{r.v}</span></div>
+              ))}
+              <div style={{display:'flex',gap:6,marginTop:4}}>
+                <button className="action-btn btn-primary" onClick={()=>test(d.id)} disabled={isTesting}>{isTesting?'Testing…':'Test Connection'}</button>
+                <button className="action-btn" style={{background:'rgba(255,255,255,.04)',border:'1px solid var(--border)',color:'var(--text-dim)',borderRadius:5,padding:'4px 10px',cursor:'pointer',fontSize:10,fontFamily:'var(--sans)'}}>Configure</button>
+              </div>
+            </div>
+          </div>);
+        })}
+      </div>
+    </div>
+  );
+}
+
+function SelfSupport() {
+  const [q,setQ]=useState('');const [res,setRes]=useState(null);const [loading,setLoading]=useState(false);
+  const LOG_ANSWERS={
+    'error':'🔍 Error Analysis:\n• 3 ERRORs in last 24h: IBA timeout (02:14), EAF arc model exception (01:58), SAP conn refused (yesterday 23:40)\n• Root cause: IBA timeout due to network latency spike (842ms). Arc model memory leak — restart recommended.\n• Action: Restart arc-model service. Check SAP RFC config.',
+    'performance':'📊 Performance Analysis:\n• API response avg: 128ms (normal: <200ms) ✓\n• ML inference: 94ms ✓\n• DB query avg: 340ms (alert threshold: 500ms) ✓\n• Memory usage: 72% — within limits\n• CPU: 34% avg, peak 88% at 02:14 during batch inference',
+    'connection':'🔌 Connection Issues:\n• SAP ERP: RFC connection timeout (3 occurrences in 24h)\n• Danieli: SSL cert expires in 14 days — renew now\n• IBA: 2 brief disconnects (auto-recovered)\n• L2 OPC-UA: Stable, no issues',
+    'model':'🤖 ML Model Health:\n• CastX defect model: Healthy — 94.2% accuracy\n• Arc stability model: Memory leak detected — 2.1GB RSS\n• DRI metallization: Healthy — 96.1% accuracy\n• Recommended: Restart arc-stability-model pod',
+  };
+  const run=(query=q)=>{
+    if(!query.trim()) return;
+    setLoading(true);setRes(null);
+    setTimeout(()=>{const k=Object.keys(LOG_ANSWERS).find(k=>query.toLowerCase().includes(k))||'error';setRes(LOG_ANSWERS[k]);setLoading(false);},1000);
+  };
+  const LOGS=[
+    {t:'04:22:18',l:'ERROR',m:'IBA DataService: Connection timeout after 5000ms — retrying (attempt 3/3)',c:'err'},
+    {t:'04:22:14',l:'WARN',m:'EAF Arc Model: Memory usage exceeded 80% threshold — 2.1GB RSS',c:'warn'},
+    {t:'03:58:01',l:'INFO',m:'CastX DefectPredictor: Inference completed in 94ms — confidence 94.2%',c:'ok'},
+    {t:'03:45:30',l:'INFO',m:'NLP Engine: Query processed — "Show EAF energy trend" → 12 results',c:'ok'},
+    {t:'03:22:11',l:'WARN',m:'SAP RFC: Connection refused — retrying with fallback endpoint',c:'warn'},
+    {t:'02:58:45',l:'INFO',m:'DRI MetalizationModel: Prediction batch complete — 142 samples',c:'ok'},
+    {t:'02:14:02',l:'ERROR',m:'ArcStabilityService: UnhandledException in Phase B analysis — thread restart',c:'err'},
+    {t:'01:45:20',l:'INFO',m:'DataIngestion: IBA sync complete — 24,500 records processed in 340ms',c:'ok'},
+  ];
+  return (
+    <div className="content">
+      <div className="card">
+        <div className="card-header"><div className="card-title"><span className="badge badge-ai">AI · NLP</span>Log Analysis — Natural Language Query</div></div>
+        <div className="card-body">
+          <div className="nlp-bar">
+            <span style={{color:'var(--purple)',fontSize:16,flexShrink:0}}>⌘</span>
+            <input className="nlp-input" placeholder='Ask about logs — e.g. "Show recent errors" or "Check model performance"' value={q} onChange={e=>setQ(e.target.value)} onKeyDown={e=>e.key==='Enter'&&run()}/>
+            <button className="nlp-btn" style={{background:'var(--purple)'}} onClick={()=>run()}>Analyze</button>
+          </div>
+          <div style={{display:'flex',gap:6,flexWrap:'wrap',marginTop:8}}>
+            {['Recent errors','Performance analysis','Connection issues','ML model health'].map(s=>(
+              <span key={s} style={{fontSize:10,padding:'3px 9px',borderRadius:20,background:'var(--purple-lo)',border:'1px solid rgba(160,80,255,.2)',color:'var(--purple)',cursor:'pointer'}} onClick={()=>{setQ(s);run(s)}}>{s}</span>
+            ))}
+          </div>
+          {loading&&<div style={{display:'flex',gap:5,alignItems:'center',color:'var(--text-dim)',fontSize:11,padding:10}}>
+            {[0,1,2].map(i=><div key={i} style={{width:5,height:5,borderRadius:'50%',background:'var(--purple)',animation:`pgn ${1.2+i*.15}s infinite ${i*.15}s`}}/>)}
+            <span>Analyzing application logs...</span>
+          </div>}
+          {res&&<div className="nlp-result" style={{borderColor:'rgba(160,80,255,0.2)',background:'rgba(160,80,255,0.04)',marginTop:10}}>{res.split('\n').map((l,i)=><div key={i} style={{marginBottom:l.startsWith('•')?3:0,color:l.startsWith('•')?'var(--text-mid)':'var(--text)'}}>{l}</div>)}</div>}
+        </div>
+      </div>
+      <div className="card">
+        <div className="card-header"><div className="card-title"><span className="badge badge-ad">LOGS</span>Application Logs</div><span style={{fontFamily:'var(--mono)',fontSize:10,color:'var(--text-dim)'}}>Last 8 entries</span></div>
+        <div className="card-body" style={{padding:'10px 14px'}}>
+          {LOGS.map((l,i)=>(
+            <div key={i} className={`log-line ${l.c}`}>
+              <span style={{opacity:.5,marginRight:12}}>{l.t}</span>
+              <span style={{fontSize:9,fontWeight:700,padding:'1px 5px',borderRadius:2,marginRight:8,background:l.c==='err'?'rgba(255,50,50,.12)':l.c==='warn'?'rgba(255,165,40,.1)':'rgba(50,200,110,.1)'}}>{l.l}</span>
+              {l.m}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════
+   ALERTS VIEW
+══════════════════════════════════════════════ */
+function AlertsView() {
+  return (
+    <div className="content">
+      <div className="card">
+        <div className="card-header"><div className="card-title"><span className="badge badge-sys">ALERTS</span>All Active Events</div><span style={{fontFamily:'var(--mono)',fontSize:11,color:'var(--red)'}}>3 critical · 2 warnings · 2 info</span></div>
+        <div className="card-body">
+          {[{type:'crit',t:'Web Crack Risk — Strand 2',d:'63% probability. Tundish superheat at 31°C. Reduce heat input immediately.',time:'02:14',mod:'CastX'},{type:'crit',t:'EAF Electrode Wear — Set B',d:'68% wear. Replacement window: 3h 40min. Pre-stage unit now.',time:'01:58',mod:'EAF'},{type:'crit',t:'DRI Gas Pressure Anomaly',d:'Zone 3 pressure 0.61 bar (normal: 0.35–0.55). Investigating.',time:'01:22',mod:'DRI'},{type:'warn',t:'Arc Instability — Phase B',d:'Voltage ±8% detected. Check electrode alignment.',time:'01:44',mod:'EAF'},{type:'warn',t:'Tundish Temp Trending High',d:'1568°C — approaching 1575°C limit.',time:'00:55',mod:'CastX'},{type:'info',t:'Charge Mix Optimized by AI',d:'DRI ratio → 71%. Saving: 12 kWh/ton.',time:'00:30',mod:'EAF'},{type:'info',t:'Predictive Maintenance — T2',d:'Health 94%. Next inspection in 72h.',time:'00:12',mod:'EAF'}].map((a,i)=>(
+            <div key={i} className={`alert-item ${a.type}`}>
+              <div className="alert-top">
+                <div className="alert-title" style={{color:a.type==='crit'?'var(--red)':a.type==='warn'?'var(--amber)':'var(--blue)'}}>{a.t}</div>
+                <div style={{display:'flex',gap:7,alignItems:'center'}}><span style={{fontSize:9,padding:'2px 6px',borderRadius:3,background:'rgba(255,255,255,.05)',color:'var(--text-dim)'}}>{a.mod}</span><div className="alert-time">{a.time} ago</div></div>
+              </div>
+              <div className="alert-desc">{a.d}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════
+   LOGIN SCREEN
+══════════════════════════════════════════════ */
+function LoginScreen({onLogin}) {
+  const [email,setEmail]=useState('');const [pass,setPass]=useState('');const [err,setErr]=useState('');const [loading,setLoading]=useState(false);
+  const doLogin=(e,de,dp)=>{
+    if(e&&e.preventDefault) e.preventDefault();
+    const loginEmail=de||email,loginPass=dp||pass;
+    setLoading(true);setErr('');
+    setTimeout(()=>{
+      const user=USERS.find(u=>u.email===loginEmail&&u.pass===loginPass);
+      if(user){localStorage.setItem('steeliq_user',JSON.stringify(user));onLogin(user);}
+      else{setErr('Invalid email or password. Please try again.');setLoading(false);}
+    },800);
+  };
+  const demoLogin=(u)=>{setEmail(u.email);setPass(u.pass);doLogin(null,u.email,u.pass);};
+  const roleColors={'super_admin':'#a060ff','plant_manager':'#4a7fff','castx_operator':'#4a7fff','eaf_operator':'#ffa528','dri_operator':'#3acc7a'};
+  return (
+    <div className="login-page">
+      <div className="login-bg"/><div className="login-bg-overlay"/>
+      <div style={{position:'relative',z:2,display:'flex',flexDirection:'column',alignItems:'center',gap:20,width:'100%',maxWidth:440,padding:'0 16px'}}>
+        <div className="login-card">
+          <div className="login-logo">
+            <div className="login-logo-mark">SQ</div>
+            <div><div className="login-logo-text">Steel<em>IQ</em></div><div className="login-logo-sub">Emirates Steel · Zealogics</div></div>
+          </div>
+          <div className="login-title">Welcome back</div>
+          <div className="login-sub">Sign in to the SteelIQ Command Center</div>
+          <form onSubmit={doLogin}>
+            <div className="form-group"><label className="form-label">Email Address</label><input className="form-input" type="email" placeholder="your.name@emsteel.ae" value={email} onChange={e=>setEmail(e.target.value)} autoComplete="email"/></div>
+            <div className="form-group"><label className="form-label">Password</label><input className="form-input" type="password" placeholder="Enter your password" value={pass} onChange={e=>setPass(e.target.value)} autoComplete="current-password"/></div>
+            {err&&<div className="login-error">{err}</div>}
+            <button className="login-btn" type="submit" disabled={loading}>{loading?'Authenticating…':'Sign In →'}</button>
+          </form>
+          <div style={{display:'flex',justifyContent:'center',gap:20,marginTop:14}}>
+            {['Secured by Zealogics','RBAC Enabled','AES-256 Encrypted'].map(t=><span key={t} style={{fontSize:9,color:'var(--text-dim)',display:'flex',alignItems:'center',gap:4}}><span style={{color:'var(--green)'}}>✓</span>{t}</span>)}
+          </div>
+        </div>
+        <div style={{background:'rgba(11,17,32,0.82)',border:'1px solid var(--border2)',borderRadius:12,padding:'16px 18px',backdropFilter:'blur(20px)',width:'100%'}}>
+          <div className="demo-title">Quick access — demo accounts</div>
+          <div className="demo-grid">
+            {USERS.map(u=>(
+              <div key={u.id} className="demo-item" onClick={()=>demoLogin(u)}>
+                <div className="demo-avatar" style={{background:`${u.color}22`,border:`1px solid ${u.color}44`,color:u.color}}>{u.initials}</div>
+                <div className="demo-info"><div className="demo-name">{u.name}</div><div className="demo-role">{ROLE_LABELS[u.role]}</div></div>
+                <div className="demo-creds">{u.pass}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div style={{fontSize:10,color:'rgba(255,255,255,.2)',textAlign:'center'}}>SteelIQ v2.1 · QEG Framework · Emirates Steel R&D · Zealogics Technologies USA</div>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════
+   AI ASSISTANT PANEL
+══════════════════════════════════════════════ */
+const ALL_MODULES_FLAT = [
+  { mod:'overview', label:'Command Center', icon:'◈', color:'var(--text-mid)', isCls:'si-ov', points:[
+    {t:'Production Flow',d:'Full DRI→EAF→LF→Cast animated flow with live KPIs'},
+    {t:'QEG Health Scores',d:'Quality, Energy & Gas composite score rings'},
+    {t:'Active Alerts',d:'Critical event feed across all processes'},
+  ]},
+  { mod:'q', sub:'Outlier Detection', label:'Outlier Detection', icon:'Q', color:'var(--blue)', isCls:'si-q', points:[
+    {t:'Tundish Temp Monitor',d:'Statistical ±2σ bounds on 40-sample window'},
+    {t:'Mould Level Anomaly',d:'Oscillation tracking and deviation detection'},
+    {t:'Root Cause Analysis',d:'Auto-correlated root cause with corrective actions'},
+  ]},
+  { mod:'q', sub:'Defect Prediction', label:'Defect Prediction', icon:'Q', color:'var(--blue)', isCls:'si-q', points:[
+    {t:'Web Cracks Risk',d:'ML model predicting strand-level crack probability'},
+    {t:'Seam & Surface Defects',d:'Supervised model trained on 18,400 heats'},
+    {t:'Strand Comparison',d:'Side-by-side strand speed and risk scoring'},
+  ]},
+  { mod:'q', sub:'Snapshot Visualization', label:'Snapshot Visualization', icon:'Q', color:'var(--blue)', isCls:'si-q', points:[
+    {t:'Live Arc Gauges',d:'Tundish temp, mould level, cast speed, oil flow'},
+    {t:'Breakout Indicators',d:'Sticker alarm, friction, shell thickness monitoring'},
+    {t:'Heat Info',d:'Grade, section, elapsed time, active strands'},
+  ]},
+  { mod:'q', sub:'NLP Analytics', label:'NLP Analytics', icon:'Q', color:'var(--blue)', isCls:'si-q', points:[
+    {t:'Natural Language Query',d:'Ask about any casting parameter in plain English'},
+    {t:'Suggested Prompts',d:'Pre-built queries for common operational questions'},
+    {t:'Query History',d:'Audit trail of all NLP interactions by user'},
+  ]},
+  { mod:'q', sub:'Time-Series Prediction', label:'Time-Series Prediction', icon:'Q', color:'var(--blue)', isCls:'si-q', points:[
+    {t:'Actual vs Predicted',d:'60-minute forecast horizon with MAPE <1%'},
+    {t:'Per-Strand Forecast',d:'Individual speed & quality predictions per strand'},
+    {t:'Dashed Prediction Line',d:'Probabilistic forecast with confidence bounds'},
+  ]},
+  { mod:'e', sub:'Energy Optimization', label:'Energy Optimization', icon:'E', color:'var(--amber)', isCls:'si-e', points:[
+    {t:'Power Curve Monitor',d:'Live kWh/ton vs target 390 kWh/ton baseline'},
+    {t:'Cycle Phase Analysis',d:'Bore-in, Main Melt, Flat Bath energy breakdown'},
+    {t:'AI Recommendations',d:'Dynamic charge mix and power curve adjustments'},
+  ]},
+  { mod:'e', sub:'Arc Stability', label:'Arc Stability', icon:'E', color:'var(--amber)', isCls:'si-e', points:[
+    {t:'3-Phase Monitoring',d:'Phase A/B/C stability gauges with live fluctuation'},
+    {t:'Voltage Analysis',d:'THD harmonics, impedance and reactive power tracking'},
+    {t:'Electrode Breakage Risk',d:'Predictive arc length and wear correlation'},
+  ]},
+  { mod:'e', sub:'Charge Mix', label:'Charge Mix', icon:'E', color:'var(--amber)', isCls:'si-e', points:[
+    {t:'DRI vs Scrap Ratio',d:'Current vs AI-recommended charge composition'},
+    {t:'Cost Optimization',d:'Energy saving projection from mix changes'},
+    {t:'Hot Metal %',d:'Liquid iron percentage and its impact on efficiency'},
+  ]},
+  { mod:'e', sub:'Tap-to-Tap', label:'Tap-to-Tap Time', icon:'E', color:'var(--amber)', isCls:'si-e', points:[
+    {t:'Heat Duration Tracker',d:'Current vs target 42-minute cycle time'},
+    {t:'Historical Comparison',d:'Last 8 heats color-coded against target'},
+    {t:'Weekly Trend',d:'Average tap time vs previous week benchmark'},
+  ]},
+  { mod:'e', sub:'Predictive Maintenance', label:'Predictive Maintenance', icon:'E', color:'var(--amber)', isCls:'si-e', points:[
+    {t:'Electrode Health',d:'Set A/B wear percentage with replacement windows'},
+    {t:'Transformer Status',d:'T1/T2 health scores and inspection schedules'},
+    {t:'Furnace Lining',d:'Refractory condition and remaining service life'},
+  ]},
+  { mod:'g', sub:'Gas Consumption', label:'Gas Consumption', icon:'G', color:'var(--green)', isCls:'si-g', points:[
+    {t:'Real-time Flow Monitor',d:'Live Nm³/h vs optimal 26,500–29,000 range'},
+    {t:'Zone Efficiency',d:'Reduction, transition & cooling zone performance'},
+    {t:'Gas-to-Iron Ratio',d:'Consumption efficiency and daily cost tracking'},
+  ]},
+  { mod:'g', sub:'Metallization Prediction', label:'Metallization Prediction', icon:'G', color:'var(--green)', isCls:'si-g', points:[
+    {t:'% Metallization Forecast',d:'1-hour ahead prediction with 96.4% confidence'},
+    {t:'Actual vs Predicted',d:'Overlay chart with dashed forecast line'},
+    {t:'Iron Ore Grade Input',d:'Fe% and reduction time correlation analysis'},
+  ]},
+  { mod:'g', sub:'Temperature Profile', label:'Temperature Profile', icon:'G', color:'var(--green)', isCls:'si-g', points:[
+    {t:'Zone 1–3 + Cooling',d:'Per-zone target vs actual temperature bars'},
+    {t:'Deviation Alerts',d:'Color-coded deviation from optimal profile'},
+    {t:'Profile Trend',d:'Historical zone temperature stability tracking'},
+  ]},
+  { mod:'g', sub:'Process Yield', label:'Process Yield', icon:'G', color:'var(--green)', isCls:'si-g', points:[
+    {t:'Yield Rate',d:'Output iron vs input ore efficiency percentage'},
+    {t:'Waste & Fines Loss',d:'Unreacted ore and fines tonnage breakdown'},
+    {t:'Output Rate',d:'t/h production rate vs 145 t/h target'},
+  ]},
+  { mod:'g', sub:'Anomaly Detection', label:'Anomaly Detection', icon:'G', color:'var(--green)', isCls:'si-g', points:[
+    {t:'ML Anomaly Scores',d:'6 DRI parameters with real-time anomaly scoring'},
+    {t:'Pressure Anomaly',d:'Zone 3 pressure deviation flagged at 0.61 bar'},
+    {t:'Auto-Recovery',d:'Self-healing detection with corrective recommendations'},
+  ]},
+  { mod:'admin', sub:'User Management', label:'User Management', icon:'⚙', color:'var(--purple)', isCls:'si-ad', points:[
+    {t:'Onboard Users',d:'Create accounts with role assignment and department'},
+    {t:'Enable / Disable',d:'Toggle user access without deleting accounts'},
+    {t:'RBAC Matrix',d:'5 roles controlling visibility of QEG modules'},
+  ]},
+  { mod:'admin', sub:'AI Model Config', label:'AI Model Config', icon:'⚙', color:'var(--purple)', isCls:'si-ad', points:[
+    {t:'Model Endpoint',d:'Configure REST API URL for ML inference engine'},
+    {t:'API Key Management',d:'Masked key storage with test connection'},
+    {t:'NLP Engine',d:'Separate endpoint config for natural language queries'},
+  ]},
+  { mod:'admin', sub:'Data Sources', label:'Data Sources', icon:'⚙', color:'var(--purple)', isCls:'si-ad', points:[
+    {t:'IBA Historian',d:'Real-time sensor data — test & validate connection'},
+    {t:'L2 OPC-UA',d:'Level 2 automation system data integration'},
+    {t:'Danieli REST API',d:'Casting machine data with SSL cert monitoring'},
+    {t:'SAP ERP',d:'Production order sync with RFC connection health'},
+  ]},
+  { mod:'admin', sub:'Self-Support', label:'Self-Support', icon:'⚙', color:'var(--purple)', isCls:'si-ad', points:[
+    {t:'NLP Log Query',d:'Ask about errors, performance and connections'},
+    {t:'Live App Logs',d:'Color-coded ERROR / WARN / INFO log feed'},
+    {t:'ML Model Health',d:'Memory, accuracy and inference time monitoring'},
+  ]},
+  { mod:'alerts', label:'Alerts', icon:'!', color:'var(--red)', isCls:'si-al', points:[
+    {t:'Critical Events',d:'3 active: Web Crack, Electrode Wear, Gas Pressure'},
+    {t:'Warnings',d:'2 active: Arc Instability, Tundish Temp trending high'},
+    {t:'Info Events',d:'AI charge mix optimization applied, T2 maintenance OK'},
+  ]},
+];
+
+const AI_ANSWERS = {
+  'web crack':'🔬 Web Crack Analysis:\nStrand 2 showing 63% crack probability — elevated tundish superheat (31°C vs target 22–28°C) is the primary driver. ML model confidence: 94.2%. Immediate action: reduce heat input by 8–10°C. Expected risk drop: to <35% within 2 heats.',
+  'energy':'⚡ EAF Energy Deep Dive:\nCurrent 412 kWh/ton (+5.6% over 390 target). Main Melt phase consuming 238 vs 220 target kWh/t. Arc Phase B instability adding ~15 kWh/t. Recommended fix: increase DRI% to 72%, adjust power curve at minute 4. Projected saving: 14 kWh/ton.',
+  'gas':'🔥 DRI Gas Status:\nNatural gas at 28,400 Nm³/h — 1.4% above optimal ceiling. Zone 3 pressure at 0.61 bar (threshold: 0.55). Gas/iron ratio 1.42 within range. Daily consumption: 682,000 Nm³. Recommend: reduce flow by 380 Nm³/h, inspect Zone 3 distributor.',
+  'metalliz':'🔬 Metallization Forecast:\nCurrent: 92.4% (target >91%) ✓. Zone 3 temperature running 8°C below profile — minor intervention needed. 1-hour forecast: 91.8% → 93.1% (improving trend). Iron ore grade: Fe 65.2%. Reduction time: 5.8 hours. No action required if Zone 3 corrected.',
+  'outlier':'🔍 Active Outliers (CastX):\n• Cast speed spike Strand 1: +0.18 m/min @ 02:07 (resolved)\n• Mould oil flow: 2.6 L/min @ 01:44 (below 2.8 threshold)\n• Tundish temp: 1582°C @ 01:12 (upper limit breach)\n• EAF current Phase A: +12% @ 00:58 (auto-corrected)\nML model confidence: 97.2%',
+  'electrode':'🔧 Electrode Status:\nSet A: 82% health — 8h 20min to service. Set B: 32% health — CRITICAL — replacement in 3h 40min. Recommend staging replacement unit now. Phase B arc instability (±8% voltage) correlates with Set B degradation.',
+  'yield':'📊 Yield Analysis:\nCurrent DRI yield: 94.2% (↑ +0.3% vs baseline). Waste rate: 5.8%. Output: 142 t/h vs 145 t/h target. Unreacted ore: 4.8t, fines loss: 2.1t. Improvement lever: Zone 3 temperature correction would add ~0.5% yield.',
+  'alert':'🚨 Active Alerts Summary:\n3 Critical: Web Crack S2 (63%), Electrode Set B wear (68%), Gas Zone 3 pressure (0.61 bar)\n2 Warnings: Arc Instability Phase B, Tundish temp trending high\n2 Info: AI charge mix optimized (+DRI 71%), Transformer T2 health OK (94%)',
+  'castx':'📐 CastX Overview:\n5 active submodules monitoring continuous casting quality. Current heat #2847 (Grade B500B, 130×130mm). 3 strands active. Key concern: Strand 2 web crack risk 63%. Mould level stable at 144mm. Cast speed 1.4 m/min. Superheat: 29°C.',
+  'eaf':'⚡ EAF Overview:\nHeat #2847 in progress. 412 kWh/ton (+5.6% over target). Arc stability: Phase A 89%, Phase B 82% (↓), Phase C 91%. Tap-to-tap: 44 min (target 42). Electrode Set B at 32% health — critical. Transformer T1/T2 healthy.',
+  'dri':'🔥 DRI Overview:\nGas reduction active. Metallization: 92.4% ✓. Gas flow: 28,400 Nm³/h (slightly high). Zone 3 pressure anomaly at 0.61 bar. Zone temperatures: Z1 820°C, Z2 890°C, Z3 956°C (−8°C deviation). Yield: 94.2%.',
+  'default':'🤖 SteelIQ AI:\nAll systems monitored. 3 critical alerts active. Overall QEG scores: Quality 88/100, Energy 79/100, Gas 94/100. Next recommended action: address Strand 2 web crack risk by reducing tundish superheat. EAF electrode Set B replacement due in 3h 40min.',
+};
+
+function AIPanel({open, onClose, setModule, activeModule, activeSub, liveData}) {
+  const [query, setQuery] = useState('');
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [expanded, setExpanded] = useState({});
+  const [filter, setFilter] = useState('');
+  const [activeTab, setActiveTab] = useState('nav'); // 'nav' | 'insights'
+  const inputRef = useRef();
+
+  const ask = useCallback((q = query) => {
+    if (!q.trim()) return;
+    setLoading(true); setResult(null);
+    setTimeout(() => {
+      const k = Object.keys(AI_ANSWERS).find(k => q.toLowerCase().includes(k)) || 'default';
+      setResult(AI_ANSWERS[k]); setLoading(false);
+    }, 900);
+  }, [query]);
+
+  useEffect(() => { if (open && inputRef.current) inputRef.current.focus(); }, [open]);
+
+  const filtered = filter
+    ? ALL_MODULES_FLAT.filter(m => m.label.toLowerCase().includes(filter.toLowerCase()) || m.points.some(p => p.t.toLowerCase().includes(filter.toLowerCase())))
+    : ALL_MODULES_FLAT;
+
+  // Group by module for nav tree
+  const groups = useMemo(() => {
+    const g = {};
+    ALL_MODULES_FLAT.forEach(m => {
+      const key = m.mod + (m.sub ? '' : '');
+      if (!g[m.mod]) g[m.mod] = { mod:m.mod, label: m.mod==='overview'?'Command Center':m.mod==='q'?'Quality — CastX':m.mod==='e'?'Electrical — EAF':m.mod==='g'?'Gas — DRI':m.mod==='admin'?'Administration':'Alerts', icon:m.icon, color:m.color, isCls:m.isCls, items:[] };
+      g[m.mod].items.push(m);
+    });
+    return Object.values(g);
+  }, []);
+
+  const QUICK_PROMPTS = ['Web crack risk analysis','EAF energy breakdown','Gas consumption status','Electrode health check','Metallization forecast','Active alerts summary','Yield optimization','CastX module overview'];
+
+  const INSIGHTS = [
+    {sev:'crit',title:'Strand 2 — Web Crack 63%',desc:'Tundish superheat 31°C. Reduce by 8°C immediately.',mod:'q',sub:'Defect Prediction'},
+    {sev:'crit',title:'Electrode Set B Critical',desc:'32% health. Replacement in 3h 40min. Stage unit now.',mod:'e',sub:'Predictive Maintenance'},
+    {sev:'warn',title:'EAF Over Target +5.6%',desc:'412 kWh/t vs 390 target. Increase DRI to 72%.',mod:'e',sub:'Energy Optimization'},
+    {sev:'warn',title:'Zone 3 Pressure Anomaly',desc:'0.61 bar — above 0.55 limit. Check distributor.',mod:'g',sub:'Anomaly Detection'},
+    {sev:'ok',title:'Metallization On Track',desc:'92.4% — above 91% target. Forecast improving.',mod:'g',sub:'Metallization Prediction'},
+    {sev:'ok',title:'AI Charge Mix Applied',desc:'DRI 71% ratio saving 12 kWh/ton this heat.',mod:'e',sub:'Charge Mix'},
+  ];
+
+  const sevColor = s => s==='crit'?'var(--red)':s==='warn'?'var(--amber)':'var(--green)';
+
+  return (
+    <>
+      {/* Collapsed tab */}
+      {!open && (
+        <div className="ai-tab" onClick={onClose} title="Open SteelIQ AI Assistant">
+          <div className="ai-tab-icon">✦</div>
+          <div className="ai-tab-label">AI Assistant</div>
+          <div style={{width:20,height:20,borderRadius:'50%',background:'var(--red)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:800,color:'#fff',border:'2px solid rgba(8,10,20,0.9)',marginTop:4}}>3</div>
+        </div>
+      )}
+
+      {/* Expanded panel */}
+      <div className={`ai-panel${open?' open':''}`}>
+        {/* Header */}
+        <div className="ai-panel-header">
+          <div className="ai-panel-title">
+            <div className="ai-panel-name">
+              <span style={{fontSize:16,animation:'ai-pulse 3s infinite'}}>✦</span>
+              <span>SteelIQ <span style={{color:'var(--purple)'}}>AI</span> Assistant</span>
+            </div>
+            <button className="ai-close" onClick={onClose}>×</button>
+          </div>
+          <div className="ai-panel-sub">{ALL_MODULES_FLAT.length} modules · 3 critical alerts · Heat #2847 active</div>
+        </div>
+
+        {/* Search / Ask */}
+        <div className="ai-search-wrap">
+          <div className="ai-search">
+            <span style={{color:'var(--purple)',fontSize:14,flexShrink:0}}>⌘</span>
+            <input ref={inputRef} className="ai-search-input" placeholder="Ask anything about the plant…" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>e.key==='Enter'&&ask()}/>
+            <button className="ai-ask-btn" onClick={()=>ask()}>Ask</button>
+          </div>
+          {/* Quick prompts */}
+          <div style={{display:'flex',gap:5,flexWrap:'wrap',marginTop:7}}>
+            {QUICK_PROMPTS.map(p=>(
+              <span key={p} style={{fontSize:9,padding:'2px 8px',borderRadius:12,background:'rgba(160,80,255,0.08)',border:'1px solid rgba(160,80,255,0.18)',color:'var(--purple)',cursor:'pointer',transition:'all .15s',whiteSpace:'nowrap'}}
+                onClick={()=>{setQuery(p);ask(p)}}>{p}</span>
+            ))}
+          </div>
+          {/* Result */}
+          {loading && (
+            <div className="ai-thinking">
+              {[0,1,2].map(i=><div key={i} className="ai-thinking-dot" style={{animationDelay:`${i*.15}s`}}/>)}
+              <span style={{fontSize:10,color:'var(--text-dim)',marginLeft:4}}>Analyzing plant data…</span>
+            </div>
+          )}
+          {result && (
+            <div className="ai-result-box">
+              <div className="ai-result-hd"><span>✦</span><span>AI Response</span></div>
+              <div className="ai-result-body">{result.split('\n').map((l,i)=><div key={i} style={{marginBottom:l.startsWith('•')?3:0}}>{l}</div>)}</div>
+            </div>
+          )}
+        </div>
+
+        {/* Tabs */}
+        <div style={{display:'flex',borderBottom:'1px solid rgba(160,80,255,0.12)',flexShrink:0}}>
+          {[{id:'nav',label:`All Modules (${ALL_MODULES_FLAT.length})`},{id:'insights',label:'AI Insights'}].map(t=>(
+            <button key={t.id} onClick={()=>setActiveTab(t.id)} style={{flex:1,padding:'9px 12px',background:'none',border:'none',borderBottom:`2px solid ${activeTab===t.id?'var(--purple)':'transparent'}`,color:activeTab===t.id?'var(--purple)':'var(--text-dim)',fontSize:11,fontWeight:600,cursor:'pointer',fontFamily:'var(--sans)',transition:'all .2s'}}>{t.label}</button>
+          ))}
+        </div>
+
+        {/* Body */}
+        <div className="ai-body">
+          {activeTab==='nav' && <>
+            {/* Filter */}
+            <div style={{padding:'8px 14px',flexShrink:0}}>
+              <input style={{width:'100%',background:'rgba(255,255,255,0.04)',border:'1px solid var(--border)',borderRadius:6,padding:'6px 10px',color:'var(--text)',fontFamily:'var(--mono)',fontSize:11,outline:'none'}} placeholder="Filter modules…" value={filter} onChange={e=>setFilter(e.target.value)}/>
+            </div>
+
+            {filter ? (
+              /* Flat search results */
+              <>
+                <div className="ai-section-head"><div className="ai-section-label">Search Results</div><div className="ai-section-count">{filtered.length}</div></div>
+                {filtered.map((m,i)=>(
+                  <div key={i} className={`ai-sub-item${activeModule===m.mod&&activeSub===m.sub?' active':''}`}
+                    style={{paddingLeft:14}} onClick={()=>{setModule(m.mod,m.sub);setFilter('');}}>
+                    <div style={{width:20,height:20,borderRadius:5,background:`${m.color}18`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:800,color:m.color,flexShrink:0}}>{m.icon}</div>
+                    <div style={{flex:1}}>
+                      <div style={{fontSize:11,fontWeight:600,color:'var(--text-mid)'}}>{m.label}</div>
+                      <div style={{fontSize:9,color:'var(--text-dim)'}}>{m.points[0]?.t}</div>
+                    </div>
+                  </div>
+                ))}
+              </>
+            ) : (
+              /* Grouped tree */
+              groups.map(g=>(
+                <div key={g.mod} className="ai-module-group">
+                  <div className={`ai-module-head${activeModule===g.mod?' active-group':''}`}
+                    onClick={()=>setExpanded(p=>({...p,[g.mod]:!p[g.mod]}))}>
+                    <div className={`ai-module-icon ${g.isCls}`} style={{background:`${g.color}18`,color:g.color}}>{g.icon}</div>
+                    <div className="ai-module-label" style={{color:activeModule===g.mod?'var(--text)':'var(--text-mid)'}}>{g.label}</div>
+                    <div style={{fontSize:9,color:'var(--text-dim)',marginRight:4}}>{g.items.length}</div>
+                    <div className={`ai-mod-chevron${expanded[g.mod]?' open':''}`}>▶</div>
+                  </div>
+                  <div className={`ai-sub-list${expanded[g.mod]?' open':''}`}>
+                    {g.items.map((item,ii)=>(
+                      <div key={ii}>
+                        <div className={`ai-sub-item${activeModule===item.mod&&activeSub===item.sub?' active':''}`}
+                          onClick={()=>setModule(item.mod, item.sub)}>
+                          <div className="ai-sub-dot"/>
+                          <div className="ai-sub-label" style={{color:activeModule===item.mod&&activeSub===item.sub?item.color:'var(--text-mid)'}}>{item.label}</div>
+                        </div>
+                        {/* Key points expanded */}
+                        {activeModule===item.mod&&activeSub===item.sub && item.points.map((pt,pi)=>(
+                          <div key={pi} style={{padding:'5px 14px 5px 60px',background:'rgba(160,80,255,0.03)',borderLeft:'2px solid rgba(160,80,255,0.12)'}}>
+                            <div style={{fontSize:10,fontWeight:600,color:item.color,marginBottom:1}}>→ {pt.t}</div>
+                            <div style={{fontSize:9,color:'var(--text-dim)',lineHeight:1.4}}>{pt.d}</div>
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))
+            )}
+          </>}
+
+          {activeTab==='insights' && <>
+            <div className="ai-section-head"><div className="ai-section-label">AI-Generated Insights</div><div className="ai-section-count">6</div></div>
+            <div style={{padding:'4px 0'}}>
+              {INSIGHTS.map((ins,i)=>(
+                <div key={i} className="ai-insight-card" onClick={()=>setModule(ins.mod,ins.sub)}>
+                  <div className="ai-insight-head">
+                    <div className="ai-insight-sev" style={{background:sevColor(ins.sev),boxShadow:`0 0 6px ${sevColor(ins.sev)}66`}}/>
+                    <div className="ai-insight-title" style={{color:sevColor(ins.sev)}}>{ins.title}</div>
+                    <span style={{marginLeft:'auto',fontSize:9,color:'var(--text-dim)',fontFamily:'var(--mono)'}}>{ins.mod.toUpperCase()}</span>
+                  </div>
+                  <div className="ai-insight-desc">{ins.desc}</div>
+                </div>
+              ))}
+            </div>
+            {/* Live data snapshot */}
+            <div className="ai-section-head" style={{marginTop:4}}><div className="ai-section-label">Live Plant Snapshot</div></div>
+            <div style={{padding:'0 14px 14px',display:'flex',flexDirection:'column',gap:6}}>
+              {[
+                {l:'Tundish Temp',v:`${liveData.tundishTemp.toFixed(0)}°C`,c:Math.abs(liveData.tundishTemp-1545)<15?'var(--green)':'var(--red)'},
+                {l:'EAF Energy',v:`${liveData.eafKwh.toFixed(0)} kWh/t`,c:liveData.eafKwh<400?'var(--green)':'var(--amber)'},
+                {l:'Metallization',v:`${liveData.metallization.toFixed(1)}%`,c:liveData.metallization>91?'var(--green)':'var(--amber)'},
+                {l:'Arc Stability',v:`${liveData.arcStability.toFixed(0)}%`,c:liveData.arcStability>85?'var(--green)':'var(--amber)'},
+                {l:'Gas Flow',v:`${(liveData.gasFlow/1000).toFixed(1)}k Nm³/h`,c:'var(--text-mid)'},
+                {l:'Yield',v:`${liveData.yieldPct.toFixed(1)}%`,c:'var(--green)'},
+              ].map(kv=>(
+                <div key={kv.l} style={{display:'flex',justifyContent:'space-between',padding:'6px 10px',background:'rgba(255,255,255,0.02)',borderRadius:6,border:'1px solid rgba(255,255,255,0.05)'}}>
+                  <span style={{fontSize:11,color:'var(--text-dim)'}}>{kv.l}</span>
+                  <span style={{fontFamily:'var(--mono)',fontSize:11,fontWeight:600,color:kv.c}}>{kv.v}</span>
+                </div>
+              ))}
+            </div>
+          </>}
+        </div>
+      </div>
+    </>
+  );
+}
+
+/* ══════════════════════════════════════════════
+   MAIN APP
+══════════════════════════════════════════════ */
+const MODULE_CONFIG = [
+  {id:'overview',label:'Command Center',icon:'◈',cls:'si-ov',access:'overview'},
+  {id:'q',label:'Quality — CastX',icon:'Q',cls:'si-q',badge:'Q',access:'q',subs:['Outlier Detection','Defect Prediction','Snapshot Visualization','NLP Analytics','Time-Series Prediction']},
+  {id:'e',label:'Electrical — EAF',icon:'E',cls:'si-e',badge:'E',access:'e',subs:['Energy Optimization','Arc Stability','Charge Mix','Tap-to-Tap','Predictive Maintenance']},
+  {id:'g',label:'Gas — DRI/DRP',icon:'G',cls:'si-g',badge:'G',access:'g',subs:['Gas Consumption','Metallization Prediction','Temperature Profile','Process Yield','Anomaly Detection']},
+  {id:'admin',label:'Administration',icon:'⚙',cls:'si-ad',badge:'ADMIN',access:'admin',subs:ADMIN_SUBS},
+  {id:'alerts',label:'Alerts',icon:'!',cls:'si-al',access:'alerts'},
+];
+
+function MainApp({user,onLogout}) {
+  const [sbOpen,setSbOpen]=useState(true);
+  const [mobileOpen,setMobileOpen]=useState(false);
+  const [activeModule,setActiveModule]=useState('overview');
+  const [activeSub,setActiveSub]=useState('Outlier Detection');
+  const [expanded,setExpanded]=useState({q:true,e:false,g:false,admin:false});
+  const [showUserMenu,setShowUserMenu]=useState(false);
+  const [aiOpen,setAiOpen]=useState(false);
+  const userMenuRef=useRef();
+
+  useEffect(()=>{
+    const check=(e)=>{ if(userMenuRef.current&&!userMenuRef.current.contains(e.target)) setShowUserMenu(false); };
+    document.addEventListener('mousedown',check);return()=>document.removeEventListener('mousedown',check);
+  },[]);
+
+  // Live data
+  const tundishTemp=useWave(1550,1510,1590,8);const mouldLevel=useWave(142,128,158,3);const castSpeed=useWave(1.4,1.1,1.8,.06);
+  const eafKwh=useWave(408,380,440,5);const eafTemp=useWave(1618,1580,1660,10);const arcStability=useWave(87,72,98,2);
+  const gasFlow=useWave(28400,26000,31000,400);const metallization=useWave(92.3,88,96,.4);const tapTime=useWave(44,38,52,1);
+  const yieldPct=useWave(94.2,91,97,.3);const defectRisk=useWave(61,45,78,4);
+  const qScore=Math.round(clamp(92-(tundishTemp-1545)*.3,70,99));
+  const eScore=Math.round(clamp(100-(eafKwh-390)*.5,60,99));
+  const gScore=Math.round(clamp(metallization*1.02,70,99));
+  const liveData={tundishTemp,mouldLevel,castSpeed,eafKwh,eafTemp,arcStability,gasFlow,metallization,tapTime,yieldPct,qScore,eScore,gScore,defectRisk};
+
+  const setModule=(mod,sub)=>{
+    if(!canAccess(user.role,mod)) return;
+    setActiveModule(mod);if(sub) setActiveSub(sub);
+    setExpanded(p=>({...p,[mod]:true}));setMobileOpen(false);
+  };
+
+  const visibleModules=MODULE_CONFIG.filter(m=>canAccess(user.role,m.access));
+  const curModule=MODULE_CONFIG.find(m=>m.id===activeModule);
+  const curSubs=curModule?.subs||[];
+  const subColorCls=activeModule==='q'?'active-q':activeModule==='e'?'active-e':activeModule==='g'?'active-g':activeModule==='admin'?'active-ad':'active-q';
+
+  const roleColors={'super_admin':'#a060ff','plant_manager':'#4a7fff','castx_operator':'#4a7fff','eaf_operator':'#ffa528','dri_operator':'#3acc7a'};
+  const userColor=roleColors[user.role]||'var(--blue)';
+
+  return (
+    <div className="app" onClick={()=>showUserMenu&&setShowUserMenu(false)}>
+      {/* HEADER */}
+      <header className="header">
+        <div className={`header-logo-zone${sbOpen?' open':''}`}>
+          <button className="hamburger" onClick={()=>setMobileOpen(o=>!o)}>☰</button>
+          <div className="logo-mark">SQ</div>
+          {sbOpen&&<div><div className="logo-text">Steel<em>IQ</em></div><div className="logo-sub">Emirates Steel</div></div>}
+          {!sbOpen&&<div style={{display:'none'}} className="logo-text-hidden"/>}
+        </div>
+        <div className="header-kpis">
+          {[{l:'Yield',v:`${yieldPct.toFixed(1)}%`,c:yieldPct>93?'var(--green)':'var(--amber)'},{l:'EAF Energy',v:`${eafKwh.toFixed(0)} kWh/t`,c:eafKwh<400?'var(--green)':'var(--amber)'},{l:'Metallization',v:`${metallization.toFixed(1)}%`,c:metallization>91?'var(--green)':'var(--amber)'},{l:'Tundish Temp',v:`${tundishTemp.toFixed(0)}°C`,c:Math.abs(tundishTemp-1545)<15?'var(--blue)':'var(--red)'},{l:'Tap-to-Tap',v:`${tapTime.toFixed(0)} min`,c:tapTime<46?'var(--green)':'var(--amber)'}].map(m=>(
+            <div key={m.l} className="hkpi"><div className="hkpi-label">{m.l}</div><div className="hkpi-val" style={{color:m.c}}>{m.v}</div></div>
+          ))}
+        </div>
+        <div className="header-right">
+          <div className="heat-tag">HEAT #2847</div>
+          <div className="status-pill"><div className="sdot"/>LIVE</div>
+          <Clock/>
+          <div className="notif-btn" title="Notifications"><span>🔔</span><div className="notif-badge"/></div>
+          <div ref={userMenuRef} style={{position:'relative'}}>
+            <div className="user-btn" onClick={e=>{e.stopPropagation();setShowUserMenu(o=>!o)}}>
+              <div className="user-avatar" style={{background:`${userColor}22`,border:`1px solid ${userColor}44`,color:userColor}}>{user.initials}</div>
+              <div style={{display:'none'}} className="user-name-wrap">
+                <div className="user-name">{user.name.split(' ')[0]}</div>
+                <div className="user-role-tag">{ROLE_LABELS[user.role]}</div>
+              </div>
+              <span style={{fontSize:10,color:'var(--text-dim)'}}>▾</span>
+            </div>
+            {showUserMenu&&(
+              <div className="user-dropdown" onClick={e=>e.stopPropagation()}>
+                <div style={{padding:'10px 10px 8px',borderBottom:'1px solid var(--border)',marginBottom:4}}>
+                  <div style={{display:'flex',alignItems:'center',gap:9,marginBottom:0}}>
+                    <div style={{width:32,height:32,borderRadius:8,background:`${userColor}22`,border:`1px solid ${userColor}44`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,fontWeight:800,color:userColor}}>{user.initials}</div>
+                    <div><div style={{fontSize:12,fontWeight:700}}>{user.name}</div><div style={{fontSize:10,color:userColor}}>{ROLE_LABELS[user.role]}</div><div style={{fontSize:10,color:'var(--text-dim)'}}>{user.email}</div></div>
+                  </div>
+                </div>
+                {[{icon:'👤',label:'My Profile'},{icon:'⚙',label:'Preferences'},{icon:'🔑',label:'Change Password'},{icon:'📊',label:'My Dashboard'}].map(it=>(
+                  <div key={it.label} className="ud-item"><span>{it.icon}</span><span>{it.label}</span></div>
+                ))}
+                <div className="ud-divider"/>
+                <div className="ud-item danger" onClick={onLogout}><span>↩</span><span>Sign Out</span></div>
+              </div>
+            )}
+          </div>
+        </div>
+      </header>
+
+      <div className="body-wrap">
+        {/* MOBILE OVERLAY */}
+        {mobileOpen&&<div className="sidebar-overlay" onClick={()=>setMobileOpen(false)}/>}
+
+        {/* SIDEBAR */}
+        <nav className={`sidebar${!sbOpen?' closed':''}${mobileOpen?' mobile-open':''}`}>
+          <div className="sb-toggle-row">
+            <button className="sb-toggle-btn" onClick={()=>setSbOpen(o=>!o)}>{sbOpen?'◁':'▷'}</button>
+          </div>
+          <div className="sb-nav">
+            {visibleModules.map((m,idx)=>(
+              <div key={m.id}>
+                {idx>0&&idx<visibleModules.length&&m.id!=='alerts'&&<div className="sb-divider"/>}
+                <button className={`sb-item${activeModule===m.id?' active':''}`}
+                  onClick={()=>{setActiveModule(m.id);if(m.subs){setExpanded(p=>({...p,[m.id]:!p[m.id]}));if(m.subs[0]) setActiveSub(m.subs[0]);}setMobileOpen(false);}}>
+                  <div className={`sb-icon-wrap ${m.cls}`}>{m.icon}</div>
+                  {sbOpen&&<>
+                    <span className="sb-label">{m.label}</span>
+                    {m.badge&&<span className="sb-badge" style={{background:`var(--${m.cls.split('-')[1]==='q'?'blue':m.cls.split('-')[1]==='e'?'amber':m.cls.split('-')[1]==='g'?'green':m.cls.split('-')[1]==='ad'?'purple':'red'}-lo)`,color:`var(--${m.cls.split('-')[1]==='q'?'blue':m.cls.split('-')[1]==='e'?'amber':m.cls.split('-')[1]==='g'?'green':m.cls.split('-')[1]==='ad'?'purple':'red'})`}}>{m.badge}</span>}
+                    {m.subs&&<span className={`sb-chevron${expanded[m.id]?' open':''}`}>▼</span>}
+                  </>}
+                </button>
+                {sbOpen&&m.subs&&(
+                  <div className={`sb-sub${expanded[m.id]?' open':''}`}>
+                    {m.subs.map(s=>(
+                      <button key={s} className={`sb-sub-btn${activeSub===s&&activeModule===m.id?' active':''}`}
+                        onClick={()=>{setActiveModule(m.id);setActiveSub(s);setExpanded(p=>({...p,[m.id]:true}));setMobileOpen(false);}}>
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          {/* Sidebar bottom user */}
+          <div className="sb-bottom">
+            {sbOpen?(
+              <div className="sb-user" onClick={()=>setShowUserMenu(o=>!o)}>
+                <div style={{width:30,height:30,borderRadius:7,background:`${userColor}22`,border:`1px solid ${userColor}44`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:800,color:userColor,flexShrink:0}}>{user.initials}</div>
+                <div className="sb-user-info"><div className="sb-user-name">{user.name}</div><div className="sb-user-role">{ROLE_LABELS[user.role]}</div></div>
+                <button className="sb-logout" onClick={e=>{e.stopPropagation();onLogout()}} title="Sign out">↩</button>
+              </div>
+            ):(
+              <div style={{display:'flex',justifyContent:'center',padding:'4px 0'}}>
+                <div style={{width:30,height:30,borderRadius:7,background:`${userColor}22`,border:`1px solid ${userColor}44`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:800,color:userColor,cursor:'pointer'}} onClick={onLogout} title="Sign out">{user.initials}</div>
+              </div>
+            )}
+          </div>
+        </nav>
+
+        {/* MAIN */}
+        <div className="main">
+          {curSubs.length>0&&(
+            <div className="submod-tabs">
+              {curSubs.map(s=>(
+                <button key={s} className={`sm-tab${activeSub===s&&activeModule===curModule.id?' '+subColorCls:''}`} onClick={()=>setActiveSub(s)}>{s}</button>
+              ))}
+            </div>
+          )}
+          {activeModule==='overview'&&<OverviewView data={liveData} setModule={setModule}/>}
+          {activeModule==='q'&&<CastXView sub={activeSub} data={liveData}/>}
+          {activeModule==='e'&&<EAFView sub={activeSub} data={liveData}/>}
+          {activeModule==='g'&&<DRIView sub={activeSub} data={liveData}/>}
+          {activeModule==='admin'&&<AdminView sub={activeSub} currentUser={user}/>}
+          {activeModule==='alerts'&&<AlertsView/>}
+        </div>
+      </div>
+
+      {/* AI ASSISTANT */}
+      <AIPanel
+        open={aiOpen}
+        onClose={()=>setAiOpen(o=>!o)}
+        setModule={(mod,sub)=>{setModule(mod,sub);setAiOpen(false);}}
+        activeModule={activeModule}
+        activeSub={activeSub}
+        liveData={liveData}
+      />
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════
+   ROOT
+══════════════════════════════════════════════ */
+function Root() {
+  const [user,setUser]=useState(()=>{try{const s=localStorage.getItem('steeliq_user');return s?JSON.parse(s):null;}catch{return null;}});
+  const login=(u)=>setUser(u);
+  const logout=()=>{localStorage.removeItem('steeliq_user');setUser(null);};
+  return user?<MainApp user={user} onLogout={logout}/>:<LoginScreen onLogin={login}/>;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Root/>);
+</script>
+
+
+</body></html>
