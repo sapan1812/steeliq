@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import Header from './Header.jsx';
 import Sidebar from './Sidebar.jsx';
 import { useAuthStore } from '../../store/authStore.js';
+import AIAssistant from '../ai/AIAssistant.jsx';
 
 export default function AppLayout() {
   const { theme } = useAuthStore();
@@ -40,7 +41,7 @@ export default function AppLayout() {
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <Header onMenuClick={handleMenuClick} />
+      <Header onMenuClick={handleMenuClick} sidebarOpen={!sidebarCollapsed} />
 
       <Sidebar
         collapsed={sidebarCollapsed}
@@ -63,14 +64,10 @@ export default function AppLayout() {
           transition: 'left var(--transition-md)',
         }}
       >
-        <div style={{
-          padding: '28px',
-          minHeight: '100%',
-          maxWidth: '1600px',
-        }}>
-          <Outlet />
-        </div>
+        <Outlet />
       </main>
+
+      <AIAssistant />
     </div>
   );
 }

@@ -251,7 +251,7 @@ export default function AlertsPage() {
   };
 
   return (
-    <div style={{ fontFamily: 'var(--font-sans)' }}>
+    <div style={{ fontFamily: 'var(--font-sans)', padding: '20px 24px', maxWidth: '1400px', margin: '0 auto' }}>
       {/* Page header */}
       <div style={{ marginBottom: 24 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
 import {
   AreaChart, Area, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, Tooltip, ResponsiveContainer, Legend,
@@ -18,13 +17,36 @@ const TABS = [
 
 function MicroappBar() {
   return (
-    <div style={{ padding: '10px 20px', background: 'rgba(58,120,255,0.08)', border: '1px solid rgba(58,120,255,0.2)', borderRadius: '10px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap', fontSize: '12px', fontFamily: "'JetBrains Mono', monospace", fontWeight: 600 }}>
-      <span style={{ color: C.blue, fontWeight: 800 }}>EAF Suite</span>
-      <span style={{ color: 'var(--text-dim)' }}>v2.1.0 · Zealogics</span>
-      {[['IBA', '12 tags'], ['L2', '5 channels']].map(([k, v]) => (
-        <span key={k} style={{ padding: '3px 8px', background: 'rgba(128,128,180,0.12)', borderRadius: '6px', color: 'var(--text-dim)' }}>{k}: {v}</span>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '9px 20px', background: 'linear-gradient(90deg, rgba(255,174,74,0.06), rgba(255,174,74,0.02) 60%, transparent)', borderBottom: '1px solid var(--border)', flexShrink: 0 }}>
+      <div style={{ width: 30, height: 30, borderRadius: 7, background: 'rgba(255,174,74,0.12)', border: `1px solid ${C.amber}`, color: C.amber, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 13 }}>E</div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+        <span style={{ fontSize: 13, fontWeight: 700 }}>EAF Suite</span>
+        <span style={{ fontFamily: 'var(--mono)', fontSize: 10, color: 'var(--text-dim)', padding: '1px 5px', borderRadius: 3, background: 'var(--surface-2)', border: '1px solid var(--border)' }}>v2.1.0</span>
+      </div>
+      <span style={{ fontSize: 10, color: 'var(--text-dim)' }}>Zealogics</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginLeft: 'auto' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontFamily: 'var(--mono)', fontSize: '9.5px', fontWeight: 600, padding: '3px 9px', borderRadius: 11, background: 'rgba(50,110,255,0.08)', border: '1px solid rgba(50,110,255,0.22)', color: 'var(--blue)' }}>
+          <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'currentColor', animation: 'pgn 2s infinite' }} />
+          IBA · 12 tags
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontFamily: 'var(--mono)', fontSize: '9.5px', fontWeight: 600, padding: '3px 9px', borderRadius: 11, background: 'rgba(160,80,255,0.08)', border: '1px solid rgba(160,80,255,0.22)', color: 'var(--purple)' }}>L2 · 5 ch</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontFamily: 'var(--mono)', fontSize: '9.5px', fontWeight: 600, padding: '3px 9px', borderRadius: 11, background: 'rgba(50,200,110,0.08)', border: '1px solid rgba(50,200,110,0.22)', color: 'var(--green)' }}>
+          <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'currentColor', animation: 'pgn 2s infinite' }} />
+          Health: 94%
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TabBar({ active, setActive }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid var(--border)', padding: '0 20px', height: '40px', background: 'var(--tabs-bg)', overflowX: 'auto', gap: 0, flexShrink: 0 }}>
+      {TABS.map(tab => (
+        <button key={tab.id} onClick={() => setActive(tab.id)} style={{ padding: '0 13px', height: '100%', fontSize: '11px', fontWeight: 500, color: active === tab.id ? C.amber : 'var(--text-dim)', background: 'none', border: 'none', borderBottom: active === tab.id ? `2px solid ${C.amber}` : '2px solid transparent', cursor: 'pointer', whiteSpace: 'nowrap', fontFamily: 'var(--sans)', transition: 'all 0.18s' }}>
+          {tab.label}
+        </button>
       ))}
-      <span style={{ marginLeft: 'auto', color: C.blue }}>Health: <b>94%</b></span>
     </div>
   );
 }
@@ -232,50 +254,30 @@ function MaintenanceTab() {
 }
 
 export default function EAFPage() {
-  const { sub } = useParams();
-  const navigate = useNavigate();
-  const activeTab = sub || 'energy';
+  const [active, setActive] = useState('energy');
   const [loading, setLoading] = useState(true);
-  const [navCollapsed, setNavCollapsed] = useState(false);
 
   useEffect(() => {
     getEAFEnergy().then(() => setLoading(false)).catch(() => setLoading(false));
   }, []);
 
   return (
-    <div style={{ display: 'flex', height: '100%', fontFamily: "'Space Grotesk', sans-serif" }}>
-      <div style={{ width: navCollapsed ? '56px' : '200px', flexShrink: 0, borderRight: '1px solid rgba(128,128,180,0.12)', padding: '16px 8px', transition: 'width 0.25s ease', overflow: 'hidden', background: 'var(--bg2)' }}>
-        <button onClick={() => setNavCollapsed(p => !p)} style={{ width: '100%', padding: '8px', background: 'rgba(128,128,180,0.08)', border: 'none', borderRadius: '8px', cursor: 'pointer', color: 'var(--text-dim)', marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: navCollapsed ? 'center' : 'flex-end' }}>
-          {navCollapsed ? '→' : '←'}
-        </button>
-        {TABS.map(tab => (
-          <button key={tab.id} onClick={() => navigate(`/app/eaf/${tab.id}`)} style={{
-            width: '100%', padding: navCollapsed ? '10px' : '10px 12px', marginBottom: '4px',
-            background: activeTab === tab.id ? 'rgba(58,120,255,0.12)' : 'transparent',
-            border: activeTab === tab.id ? '1px solid rgba(58,120,255,0.25)' : '1px solid transparent',
-            borderRadius: '8px', color: activeTab === tab.id ? C.blue : 'var(--text-dim)',
-            fontWeight: activeTab === tab.id ? 700 : 500,
-            cursor: 'pointer', fontFamily: "'Space Grotesk', sans-serif", fontSize: '13px',
-            display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap',
-            justifyContent: navCollapsed ? 'center' : 'flex-start', transition: 'background 0.2s',
-          }}>
-            <span>{tab.icon}</span>{!navCollapsed && <span>{tab.label}</span>}
-          </button>
-        ))}
-      </div>
-      <div style={{ flex: 1, padding: '24px', overflowY: 'auto' }}>
+    <div style={{ fontFamily: 'var(--sans)', minHeight: '100%' }}>
+      <style>{`@keyframes pgn { 0%,100%{opacity:1} 50%{opacity:0.3} }`}</style>
+      <div style={{ position: 'sticky', top: 0, zIndex: 10, background: 'var(--bg)' }}>
         <MicroappBar />
+        <TabBar active={active} setActive={setActive} />
+      </div>
+      <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
         {loading ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {[1, 2].map(i => <div key={i} style={{ height: '100px', background: 'rgba(128,128,180,0.08)', borderRadius: '14px' }} />)}
-          </div>
+          [1, 2].map(i => <div key={i} style={{ height: '100px', background: 'rgba(128,128,180,0.08)', borderRadius: '14px' }} />)
         ) : (
           <>
-            {activeTab === 'energy' && <EnergyTab />}
-            {activeTab === 'arc' && <ArcTab />}
-            {activeTab === 'charge' && <ChargeTab />}
-            {activeTab === 'tap' && <TapTab />}
-            {activeTab === 'maintenance' && <MaintenanceTab />}
+            {active === 'energy' && <EnergyTab />}
+            {active === 'arc' && <ArcTab />}
+            {active === 'charge' && <ChargeTab />}
+            {active === 'tap' && <TapTab />}
+            {active === 'maintenance' && <MaintenanceTab />}
           </>
         )}
       </div>

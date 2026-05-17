@@ -1,42 +1,41 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  RadialBarChart, RadialBar, ResponsiveContainer,
-  AreaChart, Area, Tooltip, XAxis, YAxis,
+  AreaChart, Area, ResponsiveContainer,
 } from 'recharts';
 import { useAuth } from '../hooks/useAuth.js';
 import { getKPIs, getAlerts } from '../api/analytics.js';
 
 const C = {
-  blue: '#3a78ff', amber: '#ffae4a', green: '#3acc7a',
-  purple: '#a060ff', red: '#e84a4a',
+  blue: '#3a6eff', amber: '#ffa528', green: '#32c86e',
+  purple: '#a060ff', red: '#ff3232',
 };
 
 const PERSONA_BY_ROLE = {
   super_admin: {
     title: 'Platform Command Center',
     intent: 'Full visibility across EAF, DRI, and CastX operations. Monitor SLOs and manage platform health.',
-    icon: '🛡',
+    icon: '⚙',
   },
   plant_manager: {
     title: 'Plant Operations Overview',
     intent: 'Track yield, energy efficiency, and quality metrics across all production stages.',
-    icon: '🏭',
+    icon: '◈',
   },
   castx_operator: {
     title: 'CastX Quality Focus',
     intent: 'Monitor strand health, mould levels, and defect predictions for active casts.',
-    icon: '🎯',
+    icon: 'Q',
   },
   eaf_operator: {
     title: 'EAF Energy & Arc Control',
     intent: 'Optimize power curve, track electrode wear, and minimize tap-to-tap time.',
-    icon: '⚡',
+    icon: 'E',
   },
   dri_operator: {
     title: 'DRI/DRP Process Control',
     intent: 'Monitor gas consumption, metallization efficiency, and zone temperatures.',
-    icon: '🔥',
+    icon: 'G',
   },
 };
 
@@ -45,115 +44,137 @@ const MOCK_KPIS = {
   eaf_kwh_per_t: 412,
   metallization_pct: 94.2,
   tundish_temp: 1562,
-  tap_to_tap_min: 58,
+  tap_to_tap_min: 44,
   breakout_risk: 2.1,
   arc_stability: 97.3,
   gas_efficiency: 88.6,
 };
 
 const MOCK_ALERTS = [
-  { id: 1, severity: 'warning', message: 'Mould level variance on Strand 2 exceeds threshold', module: 'CastX', time: '3m ago' },
-  { id: 2, severity: 'info', message: 'EAF Heat #1847 completed — energy 408 kWh/t', module: 'EAF', time: '12m ago' },
-  { id: 3, severity: 'critical', message: 'DRI Zone 2 temperature deviation detected', module: 'DRI', time: '28m ago' },
+  { id: 1, severity: 'critical', message: 'Web Crack Risk — Strand 2 at 63% probability', module: 'CastX', time: '2m ago' },
+  { id: 2, severity: 'critical', message: 'EAF Electrode Set B wear at 68% — replacement in 3h 40m', module: 'EAF', time: '14m ago' },
+  { id: 3, severity: 'warning', message: 'DRI Zone 3 pressure at 0.61 bar (limit 0.55)', module: 'DRI', time: '28m ago' },
 ];
 
 const FLOW_STAGES = [
-  { id: 'dri', label: 'DRI/DRP', icon: '🔵', color: C.amber, route: '/app/dri' },
-  { id: 'eaf', label: 'EAF', icon: '⚡', color: C.blue, route: '/app/eaf' },
-  { id: 'ladle', label: 'Ladle Furnace', icon: '🏺', color: C.purple, route: null },
-  { id: 'castx', label: 'CCM', icon: '🎯', color: C.green, route: '/app/castx' },
+  { id: 'ore',    label: 'Iron Ore Input',         icon: '⬡',  color: C.amber,  route: null },
+  { id: 'dri',    label: 'DRI Reactor',             icon: 'G',   color: C.green,  route: '/app/dri' },
+  { id: 'eaf',    label: 'Electric Arc Furnace',    icon: 'E',   color: C.amber,  route: '/app/eaf' },
+  { id: 'ladle',  label: 'Ladle Furnace',           icon: '◎',  color: C.purple, route: null },
+  { id: 'castx',  label: 'Cont. Casting',           icon: 'Q',   color: C.blue,   route: '/app/castx' },
+  { id: 'billet', label: 'Steel Billet',            icon: '▬',  color: C.green,  route: null },
 ];
 
-function QEGRing({ label, score, color, description }) {
-  const r = 52;
-  const circ = 2 * Math.PI * r;
-  const dash = (score / 100) * circ;
+const QEG_DEFS = [
+  {
+    letter: 'Q',
+    module: 'CastX Quality Engine',
+    path: '/app/castx',
+    score: 88,
+    color: C.blue,
+    colorLo: 'rgba(50,110,255,0.08)',
+    metrics: [
+      { label: 'Defect Risk', value: '2.1%' },
+      { label: 'Mould Stability', value: '97.4%' },
+      { label: 'Superheat', value: '29 °C' },
+    ],
+  },
+  {
+    letter: 'E',
+    module: 'EAF Energy Optimizer',
+    path: '/app/eaf',
+    score: 79,
+    color: C.amber,
+    colorLo: 'rgba(255,165,40,0.08)',
+    metrics: [
+      { label: 'kWh / ton', value: '412' },
+      { label: 'Arc Stability', value: '88%' },
+      { label: 'Tap-to-Tap', value: '44 min' },
+    ],
+  },
+  {
+    letter: 'G',
+    module: 'DRI Gas Analytics',
+    path: '/app/dri',
+    score: 94,
+    color: C.green,
+    colorLo: 'rgba(50,200,110,0.08)',
+    metrics: [
+      { label: 'Metallization', value: '92.4%' },
+      { label: 'Gas Flow', value: '28,400 Nm³/h' },
+      { label: 'Yield Rate', value: '94.2%' },
+    ],
+  },
+];
 
+function QEGCard({ letter, module, score, color, colorLo, metrics, navigate, path }) {
   return (
-    <div style={{
-      flex: 1, minWidth: '160px',
-      padding: '24px 20px',
-      background: 'var(--bg2, #fff)',
-      border: '1px solid rgba(128,128,180,0.15)',
-      borderRadius: '16px',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      gap: '12px',
-    }}>
-      <svg width="128" height="128" viewBox="0 0 128 128">
-        <circle cx="64" cy="64" r={r} fill="none" stroke="rgba(128,128,180,0.1)" strokeWidth="10" />
-        <circle
-          cx="64" cy="64" r={r}
-          fill="none"
-          stroke={color}
-          strokeWidth="10"
-          strokeDasharray={`${dash} ${circ - dash}`}
-          strokeLinecap="round"
-          strokeDashoffset={circ / 4}
-          style={{ transition: 'stroke-dasharray 1.2s ease' }}
-        />
-        <text x="64" y="58" textAnchor="middle" fill={color}
-          style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '22px', fontWeight: 700 }}>
-          {label}
-        </text>
-        <text x="64" y="78" textAnchor="middle" fill="var(--text-dim, #7a8aac)"
-          style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '14px', fontWeight: 600 }}>
-          {score}%
-        </text>
-      </svg>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--text, #0f1a30)' }}>{description}</div>
-        <div style={{
-          marginTop: '6px', display: 'inline-block',
-          padding: '3px 10px',
-          background: `${color}18`,
-          border: `1px solid ${color}35`,
-          borderRadius: '100px',
-          fontSize: '11px', fontWeight: 700, color,
-        }}>
-          {score >= 95 ? 'EXCELLENT' : score >= 85 ? 'GOOD' : 'ATTENTION'}
-        </div>
+    <div
+      onClick={() => navigate(path)}
+      style={{
+        borderRadius: 10,
+        padding: '18px',
+        position: 'relative',
+        overflow: 'hidden',
+        cursor: 'pointer',
+        background: `linear-gradient(140deg, ${colorLo.replace('0.08', '0.10')}, ${colorLo.replace('0.08', '0.04')})`,
+        border: `1px solid ${color}38`,
+        transition: 'transform 0.2s',
+      }}
+      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
+      onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
+    >
+      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color, marginBottom: 4 }}>{letter}</div>
+      <div style={{ fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)', fontSize: 42, fontWeight: 700, lineHeight: 1, color: 'var(--text, #0f1a30)' }}>{score}</div>
+      <div style={{ fontSize: 12, fontWeight: 700, marginTop: 6, marginBottom: 14, color: 'var(--text, #0f1a30)' }}>{module}</div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+        {metrics.map(m => (
+          <div key={m.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11 }}>
+            <span style={{ color: 'var(--text-muted, #7a8aac)' }}>{m.label}</span>
+            <span style={{ fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)', fontWeight: 600, color: 'var(--text, #0f1a30)' }}>{m.value}</span>
+          </div>
+        ))}
       </div>
+      <div style={{ marginTop: 14, fontSize: 11, color, fontWeight: 600 }}>Open {module} →</div>
     </div>
   );
 }
 
 function KpiCard({ label, value, unit, trend, color, sparkData }) {
   const upward = trend > 0;
-  const trendColor = trend === 0 ? 'var(--text-dim)' : (
+  const trendColor = trend === 0 ? 'var(--text-muted)' : (
     ['Breakout Risk'].includes(label) ? (upward ? C.red : C.green) : (upward ? C.green : C.red)
   );
 
   return (
     <div style={{
-      padding: '20px',
+      padding: '16px 18px',
       background: 'var(--bg2, #fff)',
       border: '1px solid rgba(128,128,180,0.12)',
-      borderRadius: '14px',
+      borderRadius: 10,
       display: 'flex',
       flexDirection: 'column',
-      gap: '8px',
+      gap: 6,
     }}>
-      <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-dim, #7a8aac)', letterSpacing: '0.3px' }}>
+      <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-muted, #7a8aac)', letterSpacing: '1px', textTransform: 'uppercase' }}>
         {label}
       </div>
-      <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6 }}>
         <span style={{
-          fontFamily: "'JetBrains Mono', monospace",
-          fontSize: '26px', fontWeight: 700,
+          fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+          fontSize: '24px', fontWeight: 700,
           color: color || 'var(--text, #0f1a30)',
           lineHeight: 1,
         }}>{typeof value === 'number' ? value.toFixed(value % 1 === 0 ? 0 : 1) : value}</span>
-        {unit && <span style={{ fontSize: '13px', color: 'var(--text-dim)', marginBottom: '2px' }}>{unit}</span>}
+        {unit && <span style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '2px' }}>{unit}</span>}
         {trend !== undefined && (
-          <span style={{ fontSize: '13px', fontWeight: 700, color: trendColor, marginBottom: '2px' }}>
+          <span style={{ fontSize: '12px', fontWeight: 700, color: trendColor, marginBottom: '2px' }}>
             {trend > 0 ? '▲' : trend < 0 ? '▼' : '—'} {Math.abs(trend).toFixed(1)}%
           </span>
         )}
       </div>
       {sparkData && (
-        <div style={{ height: '36px', marginTop: '4px' }}>
+        <div style={{ height: '32px', marginTop: '2px' }}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={sparkData} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
               <defs>
@@ -172,17 +193,17 @@ function KpiCard({ label, value, unit, trend, color, sparkData }) {
   );
 }
 
-function FlowDot({ delay }) {
+function FlowDot({ delay, color }) {
   return (
     <div style={{
       position: 'absolute',
-      width: '8px', height: '8px',
+      width: '7px', height: '7px',
       borderRadius: '50%',
-      background: C.blue,
-      top: '50%', marginTop: '-4px',
-      left: '-8px',
+      background: color || C.blue,
+      top: '50%', marginTop: '-3.5px',
+      left: '-7px',
       animation: `flowDot 2.5s ${delay}s infinite linear`,
-      boxShadow: `0 0 6px ${C.blue}`,
+      boxShadow: `0 0 5px ${color || C.blue}`,
     }} />
   );
 }
@@ -266,100 +287,112 @@ export default function DashboardPage() {
   const k = kpis || MOCK_KPIS;
 
   const KPI_DEFS = [
-    { key: 'yield_rate', label: 'Yield Rate', unit: '%', trend: 0.3, color: C.green },
-    { key: 'eaf_kwh_per_t', label: 'EAF kWh/t', unit: 'kWh/t', trend: -1.2, color: C.blue },
-    { key: 'metallization_pct', label: 'Metallization%', unit: '%', trend: 0.1, color: C.amber },
-    { key: 'tundish_temp', label: 'Tundish Temp', unit: '°C', trend: 0, color: C.purple },
-    { key: 'tap_to_tap_min', label: 'Tap-to-Tap', unit: 'min', trend: -2.1, color: C.blue },
-    { key: 'breakout_risk', label: 'Breakout Risk', unit: '%', trend: 0.5, color: C.red },
-    { key: 'arc_stability', label: 'Arc Stability', unit: '%', trend: 0.8, color: C.green },
-    { key: 'gas_efficiency', label: 'Gas Efficiency', unit: '%', trend: 1.1, color: C.amber },
+    { key: 'yield_rate',       label: 'Yield Rate',      unit: '%',     trend: 0.3,  color: C.green },
+    { key: 'eaf_kwh_per_t',    label: 'EAF kWh/t',       unit: 'kWh/t', trend: -1.2, color: C.amber },
+    { key: 'metallization_pct',label: 'Metallization',   unit: '%',     trend: 0.1,  color: C.amber },
+    { key: 'tundish_temp',     label: 'Tundish Temp',    unit: '°C',    trend: 0,    color: C.purple },
+    { key: 'tap_to_tap_min',   label: 'Tap-to-Tap',      unit: 'min',   trend: -2.1, color: C.blue },
+    { key: 'breakout_risk',    label: 'Breakout Risk',   unit: '%',     trend: 0.5,  color: C.red },
+    { key: 'arc_stability',    label: 'Arc Stability',   unit: '%',     trend: 0.8,  color: C.green },
+    { key: 'gas_efficiency',   label: 'Gas Efficiency',  unit: '%',     trend: 1.1,  color: C.amber },
   ];
 
   const severityColor = { critical: C.red, warning: C.amber, info: C.blue };
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto' }}>
+    <div style={{ padding: '20px 24px', maxWidth: '1400px', margin: '0 auto' }}>
       <style>{`
         @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
         @keyframes flowDot {
-          0%{left:-8px;opacity:0} 15%{opacity:1} 85%{opacity:1} 100%{left:calc(100% + 8px);opacity:0}
+          0%{left:-7px;opacity:0} 15%{opacity:1} 85%{opacity:1} 100%{left:calc(100% + 7px);opacity:0}
         }
       `}</style>
 
-      {/* Persona strip */}
+      {/* Persona strip — prototype style */}
       <div style={{
-        padding: '16px 20px',
-        background: 'var(--bg2, #fff)',
-        border: '1px solid rgba(128,128,180,0.15)',
-        borderRadius: '12px',
-        marginBottom: '24px',
         display: 'flex',
         alignItems: 'center',
-        gap: '16px',
+        gap: 10,
+        padding: '7px 12px',
+        background: 'linear-gradient(90deg, rgba(160,80,255,0.06), transparent 80%)',
+        border: '1px solid rgba(160,80,255,0.15)',
+        borderRadius: 8,
+        marginBottom: 10,
       }}>
-        <span style={{ fontSize: '28px' }}>{persona.icon}</span>
-        <div>
-          <div style={{ fontWeight: 700, fontSize: '16px', color: 'var(--text, #0f1a30)' }}>
-            {persona.title}
-          </div>
-          <div style={{ fontSize: '13px', color: 'var(--text-dim, #7a8aac)', marginTop: '2px' }}>
-            {persona.intent}
-          </div>
+        <div style={{
+          width: 28, height: 28, borderRadius: 6,
+          background: 'rgba(160,80,255,0.1)',
+          border: '1px solid rgba(160,80,255,0.25)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: C.purple, fontSize: 13, fontWeight: 700, flexShrink: 0,
+        }}>
+          {persona.icon}
         </div>
-        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: C.green, boxShadow: `0 0 6px ${C.green}` }} />
-          <span style={{ fontSize: '12px', fontWeight: 600, color: C.green }}>LIVE</span>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text, #0f1a30)' }}>{persona.title}</div>
+          <div style={{ fontSize: 10, color: 'var(--text-muted, #7a8aac)', marginTop: 1 }}>{persona.intent}</div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+          <div style={{ width: 7, height: 7, borderRadius: '50%', background: C.green, boxShadow: `0 0 5px ${C.green}` }} />
+          <span style={{ fontSize: 10, fontWeight: 700, color: C.green, letterSpacing: '1px' }}>LIVE</span>
         </div>
       </div>
 
       {/* Process flow */}
       <div style={{
-        padding: '24px',
+        padding: '18px 20px',
         background: 'var(--bg2, #fff)',
-        border: '1px solid rgba(128,128,180,0.15)',
-        borderRadius: '16px',
-        marginBottom: '24px',
+        border: '1px solid rgba(128,128,180,0.13)',
+        borderRadius: 12,
+        marginBottom: 16,
       }}>
-        <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-dim)', letterSpacing: '1px', marginBottom: '20px' }}>
-          PROCESS FLOW
+        <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--text-muted, #7a8aac)', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 14 }}>
+          STEELMAKING PROCESS FLOW
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0', overflowX: 'auto', paddingBottom: '4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto', paddingBottom: 4 }}>
           {FLOW_STAGES.map((stage, i) => (
             <React.Fragment key={stage.id}>
               <div
                 onClick={() => stage.route && navigate(stage.route)}
                 style={{
-                  flex: 'none',
-                  padding: '16px 24px',
-                  background: `${stage.color}12`,
-                  border: `1.5px solid ${stage.color}30`,
-                  borderRadius: '12px',
+                  flexShrink: 0,
+                  padding: '12px 16px',
+                  background: `${stage.color}10`,
+                  border: `1px solid ${stage.color}28`,
+                  borderRadius: 10,
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  gap: '8px',
+                  gap: 5,
                   cursor: stage.route ? 'pointer' : 'default',
-                  minWidth: '120px',
+                  minWidth: 100,
                   transition: 'transform 0.2s, border-color 0.2s',
                 }}
-                onMouseEnter={e => { if (stage.route) { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.borderColor = `${stage.color}70`; }}}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = `${stage.color}30`; }}
+                onMouseEnter={e => { if (stage.route) { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.borderColor = `${stage.color}55`; } }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = `${stage.color}28`; }}
               >
-                <span style={{ fontSize: '28px' }}>{stage.icon}</span>
-                <span style={{ fontSize: '12px', fontWeight: 700, color: stage.color, textAlign: 'center' }}>{stage.label}</span>
+                <div style={{
+                  width: 28, height: 28, borderRadius: 7,
+                  background: `${stage.color}18`,
+                  border: `1px solid ${stage.color}44`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 13, fontWeight: 800, color: stage.color,
+                }}>
+                  {stage.icon}
+                </div>
+                <span style={{ fontSize: 10, fontWeight: 700, color: stage.color, textAlign: 'center', whiteSpace: 'nowrap' }}>{stage.label}</span>
                 {stage.route && (
-                  <span style={{ fontSize: '10px', color: 'var(--text-dim)', fontWeight: 500 }}>→ Open Module</span>
+                  <span style={{ fontSize: 9, color: 'var(--text-muted)', fontWeight: 500 }}>→ Open</span>
                 )}
               </div>
               {i < FLOW_STAGES.length - 1 && (
                 <div style={{
-                  flex: 1, height: '2px', minWidth: '32px',
-                  background: 'linear-gradient(90deg, rgba(58,120,255,0.2), rgba(58,120,255,0.5))',
+                  flex: 1, height: '2px', minWidth: 24,
+                  background: `linear-gradient(90deg, ${stage.color}30, ${FLOW_STAGES[i + 1].color}30)`,
                   position: 'relative', overflow: 'visible',
                 }}>
-                  <FlowDot delay={i * 0.8} />
-                  <FlowDot delay={i * 0.8 + 1.3} />
+                  <FlowDot delay={i * 0.7} color={stage.color} />
+                  <FlowDot delay={i * 0.7 + 1.2} color={stage.color} />
                 </div>
               )}
             </React.Fragment>
@@ -367,28 +400,35 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* QEG Health Rings */}
+      {/* QEG Cards grid */}
       <div style={{
-        display: 'flex', gap: '20px', marginBottom: '24px', flexWrap: 'wrap',
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr 1fr',
+        gap: 14,
+        marginBottom: 16,
       }}>
-        <QEGRing label="Q" score={98} color={C.green} description="CastX — Strand Quality" />
-        <QEGRing label="E" score={94} color={C.blue} description="EAF — Energy Efficiency" />
-        <QEGRing label="G" score={96} color={C.amber} description="DRI — Gas Optimization" />
+        {QEG_DEFS.map(def => (
+          <QEGCard
+            key={def.letter}
+            {...def}
+            navigate={navigate}
+          />
+        ))}
       </div>
 
       {/* KPI Grid */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-        gap: '16px',
-        marginBottom: '24px',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(185px, 1fr))',
+        gap: 12,
+        marginBottom: 16,
       }}>
         {loading
           ? Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} style={{ padding: '20px', background: 'var(--bg2)', borderRadius: '14px' }}>
-              <Skeleton h={12} w="60%" r={6} />
-              <div style={{ marginTop: '12px' }}><Skeleton h={28} w="80%" r={6} /></div>
-              <div style={{ marginTop: '12px' }}><Skeleton h={36} r={6} /></div>
+            <div key={i} style={{ padding: '16px 18px', background: 'var(--bg2)', borderRadius: 10 }}>
+              <Skeleton h={10} w="60%" r={5} />
+              <div style={{ marginTop: 10 }}><Skeleton h={24} w="75%" r={5} /></div>
+              <div style={{ marginTop: 10 }}><Skeleton h={32} r={5} /></div>
             </div>
           ))
           : KPI_DEFS.map(d => (
@@ -407,51 +447,51 @@ export default function DashboardPage() {
 
       {/* Alerts preview */}
       <div style={{
-        padding: '24px',
+        padding: '18px 20px',
         background: 'var(--bg2, #fff)',
-        border: '1px solid rgba(128,128,180,0.15)',
-        borderRadius: '16px',
+        border: '1px solid rgba(128,128,180,0.13)',
+        borderRadius: 12,
       }}>
         <div style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14,
         }}>
-          <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-dim)', letterSpacing: '1px' }}>
+          <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '1.5px', textTransform: 'uppercase' }}>
             RECENT ALERTS
           </div>
           <a href="/app/alerts" style={{
-            fontSize: '13px', fontWeight: 600, color: C.blue, textDecoration: 'none',
+            fontSize: 11, fontWeight: 600, color: C.blue, textDecoration: 'none',
           }}>View all →</a>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {alerts.map(alert => (
             <div key={alert.id} style={{
-              padding: '14px 16px',
+              padding: '12px 14px',
               borderLeft: `3px solid ${severityColor[alert.severity] || C.blue}`,
               background: `${severityColor[alert.severity] || C.blue}08`,
-              borderRadius: '0 10px 10px 0',
+              borderRadius: '0 8px 8px 0',
               display: 'flex',
               alignItems: 'center',
-              gap: '14px',
+              gap: 12,
             }}>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)', marginBottom: '4px' }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text)', marginBottom: 4 }}>
                   {alert.message}
                 </div>
-                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
                   <span style={{
-                    padding: '2px 8px',
-                    background: `${severityColor[alert.severity]}20`,
+                    padding: '1px 7px',
+                    background: `${severityColor[alert.severity]}18`,
                     color: severityColor[alert.severity],
-                    borderRadius: '100px', fontSize: '11px', fontWeight: 700,
-                    textTransform: 'uppercase',
+                    borderRadius: 3, fontSize: 9, fontWeight: 700,
+                    textTransform: 'uppercase', letterSpacing: '0.5px',
                   }}>{alert.severity}</span>
                   <span style={{
-                    padding: '2px 8px',
+                    padding: '1px 7px',
                     background: 'rgba(128,128,180,0.1)',
-                    color: 'var(--text-dim)',
-                    borderRadius: '100px', fontSize: '11px', fontWeight: 600,
+                    color: 'var(--text-muted)',
+                    borderRadius: 3, fontSize: 9, fontWeight: 600,
                   }}>{alert.module}</span>
-                  <span style={{ fontSize: '12px', color: 'var(--text-dim)' }}>{alert.time}</span>
+                  <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>{alert.time}</span>
                 </div>
               </div>
             </div>

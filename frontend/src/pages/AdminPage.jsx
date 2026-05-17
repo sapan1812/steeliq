@@ -8,6 +8,7 @@ const SECTIONS = [
   { section: 'modules', label: 'Module Registry' },
   { section: 'architecture', label: 'Platform Architecture' },
   { section: 'datasources', label: 'Data Sources' },
+  { section: 'ai-config', label: 'AI Model Config' },
   { section: 'users', label: 'User Management' },
   { section: 'support', label: 'Self-Support' },
 ];
@@ -66,86 +67,465 @@ function ModuleRegistry() {
   const [loading, setLoading] = useState(true);
 
   const MOCK_MODULES = [
-    { id: '1', name: 'CastX Quality Engine', slug: 'castx', type: 'analytics', enabled: true, version: '2.4.1', last_sync: new Date(Date.now() - 5 * 60000).toISOString() },
-    { id: '2', name: 'EAF Energy Optimizer', slug: 'eaf', type: 'optimization', enabled: true, version: '1.9.3', last_sync: new Date(Date.now() - 12 * 60000).toISOString() },
-    { id: '3', name: 'DRI Gas Analytics', slug: 'dri', type: 'analytics', enabled: true, version: '3.1.0', last_sync: new Date(Date.now() - 3 * 60000).toISOString() },
-    { id: '4', name: 'Alerts & Notifications', slug: 'alerts', type: 'core', enabled: true, version: '4.0.2', last_sync: new Date(Date.now() - 1 * 60000).toISOString() },
-    { id: '5', name: 'NLP Report Generator', slug: 'nlp', type: 'ai', enabled: false, version: '1.2.0', last_sync: null },
-    { id: '6', name: 'Predictive Scheduler', slug: 'scheduler', type: 'ai', enabled: false, version: '0.9.1', last_sync: null },
+    {
+      id: '1', name: 'CastX Quality Engine', slug: 'castx', type: 'analytics', status: 'active',
+      version: '2.4.1', tagline: 'Defect prediction & continuous casting quality',
+      icon: 'Q', color: '#3a6eff', health: 97, instances: 2,
+      roles: ['super_admin', 'plant_manager', 'castx_operator'],
+      iba: ['IBA.CCM.S1.TEMP', 'IBA.CCM.S2.TEMP', 'IBA.CCM.MOULD'],
+      l2: ['L2.CCM.SPEED', 'L2.CCM.RECIPE'],
+      capabilities: ['Defect ML', 'NLP Query', 'Time-series'],
+      deployedAt: '2025-03-12 09:00 GST', vendor: 'Zealogics',
+    },
+    {
+      id: '2', name: 'EAF Energy Optimizer', slug: 'eaf', type: 'optimization', status: 'active',
+      version: '1.9.3', tagline: 'Arc energy optimisation & electrode management',
+      icon: 'E', color: '#ffa528', health: 88, instances: 2,
+      roles: ['super_admin', 'plant_manager', 'eaf_operator'],
+      iba: ['IBA.EAF.KWH', 'IBA.EAF.PHASE_A', 'IBA.EAF.ELEC'],
+      l2: ['L2.EAF.SETPOINT', 'L2.EAF.CHARGE'],
+      capabilities: ['Arc ML', 'Charge Mix AI', 'Maint. Pred.'],
+      deployedAt: '2025-01-22 14:30 GST', vendor: 'Zealogics',
+    },
+    {
+      id: '3', name: 'DRI Gas Analytics', slug: 'dri', type: 'analytics', status: 'active',
+      version: '3.1.0', tagline: 'Gas consumption & metallization prediction',
+      icon: 'G', color: '#32c86e', health: 94, instances: 2,
+      roles: ['super_admin', 'plant_manager', 'dri_operator'],
+      iba: ['IBA.DRI.GAS_FLOW', 'IBA.DRI.ZONE3_P', 'IBA.DRI.METALIZ'],
+      l2: ['L2.DRI.TEMP_PROFILE'],
+      capabilities: ['Gas ML', 'Yield Pred.', 'Anomaly Det.'],
+      deployedAt: '2025-02-08 11:00 GST', vendor: 'Zealogics',
+    },
+    {
+      id: '4', name: 'Alerts & Notifications', slug: 'alerts', type: 'core', status: 'active',
+      version: '4.0.2', tagline: 'Cross-module alert aggregation & escalation',
+      icon: '!', color: '#ff3232', health: 100, instances: 3,
+      roles: ['super_admin', 'plant_manager', 'castx_operator', 'eaf_operator', 'dri_operator'],
+      iba: [],
+      l2: [],
+      capabilities: ['Event Bus', 'Escalation', 'Email/SMS'],
+      deployedAt: '2024-11-01 08:00 GST', vendor: 'Zealogics',
+    },
+    {
+      id: '5', name: 'NLP Report Generator', slug: 'nlp', type: 'ai', status: 'beta',
+      version: '1.2.0', tagline: 'Natural language shift reports from live data',
+      icon: '⌘', color: '#a060ff', health: 61, instances: 1,
+      roles: ['super_admin', 'plant_manager'],
+      iba: [],
+      l2: [],
+      capabilities: ['GPT-4o', 'PDF Export', 'Scheduling'],
+      deployedAt: '2025-04-01 10:00 GST', vendor: 'Zealogics AI',
+    },
+    {
+      id: '6', name: 'Predictive Scheduler', slug: 'scheduler', type: 'ai', status: 'dev',
+      version: '0.9.1', tagline: 'AI-driven maintenance scheduling & planning',
+      icon: '◈', color: '#a060ff', health: 0, instances: 0,
+      roles: ['super_admin'],
+      iba: [],
+      l2: [],
+      capabilities: ['Optimizer', 'Calendar API'],
+      deployedAt: '—', vendor: 'In-house',
+    },
   ];
 
   useEffect(() => {
     listModules()
-      .then(setModules)
+      .then(data => setModules(Array.isArray(data) && data.length ? data : MOCK_MODULES))
       .catch(() => setModules(MOCK_MODULES))
       .finally(() => setLoading(false));
   }, []);
 
-  const handleToggle = async (id, enabled) => {
+  const handleToggle = async (id, status) => {
+    const newStatus = status === 'active' ? 'disabled' : 'active';
     try {
-      await toggleModule(id, !enabled);
-      setModules((prev) => prev.map((m) => m.id === id ? { ...m, enabled: !enabled } : m));
-    } catch {
-      setModules((prev) => prev.map((m) => m.id === id ? { ...m, enabled: !enabled } : m));
-    }
+      await toggleModule(id, newStatus === 'active');
+    } catch {}
+    setModules((prev) => prev.map((m) => m.id === id ? { ...m, status: newStatus } : m));
   };
 
   const typeColors = { analytics: 'var(--blue)', optimization: 'var(--amber)', ai: 'var(--purple)', core: 'var(--green)' };
+  const statusColors = { active: 'var(--green)', beta: 'var(--amber)', dev: 'var(--text-muted)', disabled: 'var(--red)' };
+
+  const counts = {
+    total: modules.length,
+    active: modules.filter(m => m.status === 'active').length,
+    beta: modules.filter(m => m.status === 'beta').length,
+    dev: modules.filter(m => m.status === 'dev').length,
+    ibaTotal: new Set(modules.flatMap(m => m.iba || [])).size,
+    l2Total: new Set(modules.flatMap(m => m.l2 || [])).size,
+  };
+
+  if (loading) {
+    return (
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: 12 }}>
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, padding: 20, height: 240 }}>
+            <div style={{ height: 14, background: 'var(--bg-secondary)', borderRadius: 4, width: '60%', marginBottom: 10 }} />
+            <div style={{ height: 10, background: 'var(--bg-secondary)', borderRadius: 4, width: '40%' }} />
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
-    <Card>
-      <SectionHeader title="Microapp Module Registry" subtitle={`${modules.filter(m => m.enabled).length} of ${modules.length} modules active`} />
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
-          <thead>
-            <tr style={{ background: 'var(--bg-secondary)' }}>
-              {['Module', 'Slug', 'Type', 'Version', 'Last Sync', 'Status'].map((h) => (
-                <th key={h} style={{ padding: '10px 16px', textAlign: 'left', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {modules.map((m) => (
-              <tr key={m.id} style={{ borderBottom: '1px solid var(--border)' }}
-                onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg-secondary)'}
-                onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
-              >
-                <td style={{ padding: '12px 16px', fontWeight: 600 }}>{m.name}</td>
-                <td style={{ padding: '12px 16px', fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--text-secondary)' }}>{m.slug}</td>
-                <td style={{ padding: '12px 16px' }}><Badge label={m.type} color={typeColors[m.type] || 'var(--text-muted)'} /></td>
-                <td style={{ padding: '12px 16px', fontFamily: 'var(--font-mono)', fontSize: '12px' }}>{m.version}</td>
-                <td style={{ padding: '12px 16px', fontSize: '12px', color: 'var(--text-muted)' }}>
-                  {m.last_sync ? new Date(m.last_sync).toLocaleTimeString() : '—'}
-                </td>
-                <td style={{ padding: '12px 16px' }}>
-                  <button
-                    onClick={() => handleToggle(m.id, m.enabled)}
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 6,
-                      padding: '4px 10px',
-                      borderRadius: 6,
-                      fontSize: '11px',
-                      fontWeight: 700,
-                      fontFamily: 'var(--font-sans)',
-                      cursor: 'pointer',
-                      background: m.enabled ? 'rgba(58,204,122,0.12)' : 'rgba(255,74,106,0.10)',
-                      color: m.enabled ? 'var(--green)' : 'var(--text-muted)',
-                      border: `1px solid ${m.enabled ? 'rgba(58,204,122,0.25)' : 'var(--border)'}`,
-                      transition: 'all var(--transition)',
-                    }}
-                  >
-                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: m.enabled ? 'var(--green)' : 'var(--text-muted)' }} />
-                    {m.enabled ? 'Active' : 'Inactive'}
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <div>
+      {/* Summary strip */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12, marginBottom: 20 }}>
+        {[
+          { label: 'Microapps Installed', value: counts.total, color: 'var(--text)' },
+          { label: 'Active in Production', value: counts.active, color: 'var(--green)' },
+          { label: 'Beta / Dev Slots', value: counts.beta + counts.dev, color: 'var(--amber)' },
+          { label: 'Data Bindings', value: `${counts.ibaTotal} IBA · ${counts.l2Total} L2`, color: 'var(--blue)' },
+        ].map(m => (
+          <div key={m.label} style={{
+            background: 'var(--bg-card)', border: '1px solid var(--border)',
+            borderRadius: 10, padding: '14px 16px', boxShadow: 'var(--shadow)',
+          }}>
+            <div style={{ fontSize: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)', marginBottom: 6 }}>{m.label}</div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 22, fontWeight: 700, color: m.color }}>{m.value}</div>
+          </div>
+        ))}
       </div>
-    </Card>
+
+      {/* Card grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: 12 }}>
+        {modules.map(m => {
+          const color = m.color || typeColors[m.type] || 'var(--blue)';
+          const sColor = statusColors[m.status] || 'var(--text-muted)';
+          const healthColor = m.health > 90 ? 'var(--green)' : m.health > 60 ? 'var(--amber)' : m.health === 0 ? 'var(--text-muted)' : 'var(--red)';
+
+          return (
+            <div key={m.id} style={{
+              background: 'var(--bg-card)', border: '1px solid var(--border)',
+              borderRadius: 12, boxShadow: 'var(--shadow)',
+              display: 'flex', flexDirection: 'column', overflow: 'hidden',
+              opacity: m.status === 'dev' ? 0.75 : 1,
+            }}>
+              {/* Card header */}
+              <div style={{ padding: '16px 18px', borderBottom: '1px solid var(--border)', display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                <div style={{
+                  width: 42, height: 42, borderRadius: 10, flexShrink: 0,
+                  background: `${color}18`, border: `1px solid ${color}55`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 18, fontWeight: 800, color,
+                }}>
+                  {m.icon}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: 13, fontWeight: 700 }}>{m.name}</span>
+                    <span style={{
+                      fontSize: 9, padding: '2px 7px', borderRadius: 3, fontWeight: 700,
+                      letterSpacing: '0.5px', textTransform: 'uppercase',
+                      background: `${sColor}18`, color: sColor, border: `1px solid ${sColor}33`,
+                    }}>{m.status.toUpperCase()}</span>
+                  </div>
+                  <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 3 }}>{m.tagline}</div>
+                  <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 2, fontFamily: 'var(--font-mono)' }}>
+                    v{m.version} · {m.vendor}
+                  </div>
+                </div>
+              </div>
+
+              {/* Card body */}
+              <div style={{ padding: '14px 18px', flex: 1, display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {/* Health bar */}
+                <div>
+                  {[
+                    { label: 'Deployed', value: m.deployedAt },
+                    { label: 'Health · Instances', value: `${m.health}% · ${m.instances} pod${m.instances !== 1 ? 's' : ''}`, color: healthColor },
+                  ].map(row => (
+                    <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, marginBottom: 5 }}>
+                      <span style={{ color: 'var(--text-muted)' }}>{row.label}</span>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: row.color || 'var(--text-secondary)' }}>{row.value}</span>
+                    </div>
+                  ))}
+                  <div style={{ height: 4, background: 'var(--bg-secondary)', borderRadius: 2, marginTop: 4 }}>
+                    <div style={{ height: '100%', width: `${m.health}%`, background: healthColor, borderRadius: 2, transition: 'width 0.5s' }} />
+                  </div>
+                </div>
+
+                {/* RBAC roles */}
+                {m.roles && m.roles.length > 0 && (
+                  <div>
+                    <div style={{ fontSize: 9, color: 'var(--text-muted)', letterSpacing: 1, fontWeight: 700, marginBottom: 5, textTransform: 'uppercase' }}>RBAC Roles</div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                      {m.roles.map(r => (
+                        <span key={r} style={{
+                          fontSize: 9, padding: '2px 7px', borderRadius: 3,
+                          background: 'var(--bg-secondary)', border: '1px solid var(--border)',
+                          color: 'var(--text-muted)', textTransform: 'capitalize',
+                        }}>
+                          {r.replace(/_/g, ' ')}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Data bindings */}
+                <div>
+                  <div style={{ fontSize: 9, color: 'var(--text-muted)', letterSpacing: 1, fontWeight: 700, marginBottom: 5, textTransform: 'uppercase' }}>Data Bindings</div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                    {m.iba && m.iba.length > 0 && (
+                      <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 3, background: 'rgba(50,110,255,0.1)', color: 'var(--blue)', border: '1px solid rgba(50,110,255,0.2)' }}>
+                        IBA × {m.iba.length}
+                      </span>
+                    )}
+                    {m.l2 && m.l2.length > 0 && (
+                      <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 3, background: 'rgba(160,80,255,0.1)', color: 'var(--purple)', border: '1px solid rgba(160,80,255,0.2)' }}>
+                        L2 × {m.l2.length}
+                      </span>
+                    )}
+                    {(m.capabilities || []).slice(0, 2).map(c => (
+                      <span key={c} style={{ fontSize: 9, padding: '2px 7px', borderRadius: 3, background: 'var(--bg-secondary)', border: '1px solid var(--border)', color: 'var(--text-muted)' }}>{c}</span>
+                    ))}
+                    {(m.capabilities || []).length > 2 && (
+                      <span style={{ fontSize: 9, padding: '2px 7px', borderRadius: 3, background: 'var(--bg-secondary)', border: '1px solid var(--border)', color: 'var(--text-muted)' }}>
+                        +{m.capabilities.length - 2}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Card footer */}
+              <div style={{ padding: '12px 18px', borderTop: '1px solid var(--border)', display: 'flex', gap: 6 }}>
+                <button style={{
+                  padding: '5px 12px', borderRadius: 6, fontSize: 11, fontWeight: 600,
+                  fontFamily: 'var(--font-sans)', cursor: 'pointer',
+                  background: 'rgba(50,110,255,0.1)', color: 'var(--blue)', border: '1px solid rgba(50,110,255,0.25)',
+                }}>Configure</button>
+                <button style={{
+                  padding: '5px 12px', borderRadius: 6, fontSize: 11, fontWeight: 600,
+                  fontFamily: 'var(--font-sans)', cursor: 'pointer',
+                  background: 'var(--bg-secondary)', color: 'var(--text-muted)', border: '1px solid var(--border)',
+                }}>Logs</button>
+                <button style={{
+                  padding: '5px 12px', borderRadius: 6, fontSize: 11, fontWeight: 600,
+                  fontFamily: 'var(--font-sans)', cursor: 'pointer',
+                  background: 'var(--bg-secondary)', color: 'var(--text-muted)', border: '1px solid var(--border)',
+                }}>Versions</button>
+                <button
+                  onClick={() => handleToggle(m.id, m.status)}
+                  style={{
+                    marginLeft: 'auto', padding: '5px 12px', borderRadius: 6, fontSize: 11, fontWeight: 600,
+                    fontFamily: 'var(--font-sans)', cursor: 'pointer',
+                    background: m.status === 'active' ? 'rgba(255,50,50,0.1)' : 'rgba(50,200,110,0.1)',
+                    color: m.status === 'active' ? 'var(--red)' : 'var(--green)',
+                    border: `1px solid ${m.status === 'active' ? 'rgba(255,50,50,0.25)' : 'rgba(50,200,110,0.25)'}`,
+                  }}
+                >
+                  {m.status === 'active' ? 'Disable' : 'Enable'}
+                </button>
+              </div>
+            </div>
+          );
+        })}
+
+        {/* Install New Microapp dashed card */}
+        <div style={{
+          background: 'transparent', border: '2px dashed var(--border)',
+          borderRadius: 12, display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center', gap: 10,
+          padding: '32px 24px', cursor: 'pointer', minHeight: 200,
+          transition: 'border-color 0.2s, background 0.2s',
+        }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--purple)'; e.currentTarget.style.background = 'rgba(160,80,255,0.04)'; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = 'transparent'; }}
+        >
+          <div style={{
+            width: 42, height: 42, borderRadius: 10,
+            background: 'rgba(160,80,255,0.1)', border: '1px solid rgba(160,80,255,0.25)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 22, color: 'var(--purple)', fontWeight: 300,
+          }}>+</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>Install New Microapp</div>
+          <div style={{ fontSize: 11, color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.5, maxWidth: 240 }}>
+            Register a vendor module or in-house app. Configure data bindings, roles and deploy without redeploying the shell.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── AI Model Config Section ──────────────────────────────────────────────────
+function AIModelConfig() {
+  const [cfg, setCfg] = useState({
+    nlpEndpoint: 'https://api.zealogics.com/nlp/v2',
+    apiKey: 'sk-zeal-••••••••••••••••••••••••••••••',
+    modelVersion: 'gpt-4o',
+    maxTokens: 2048,
+    temperature: 0.3,
+  });
+  const [showKey, setShowKey] = useState(false);
+  const [testState, setTestState] = useState(null); // null | 'testing' | 'success' | 'error'
+  const [saved, setSaved] = useState(false);
+
+  const MOCK_INFERENCES = [
+    { ts: '04:22:18', model: 'steeliq-nlp-v1.4', tokens: 312, latency: '94ms', status: 'ok' },
+    { ts: '04:18:05', model: 'steeliq-nlp-v1.4', tokens: 278, latency: '88ms', status: 'ok' },
+    { ts: '04:09:41', model: 'steeliq-ml-v2.1', tokens: 512, latency: '210ms', status: 'ok' },
+    { ts: '03:58:01', model: 'steeliq-nlp-v1.4', tokens: 198, latency: '76ms', status: 'ok' },
+    { ts: '03:44:22', model: 'steeliq-ml-v2.1', tokens: 724, latency: '680ms', status: 'warn' },
+  ];
+
+  const handleTestConnection = () => {
+    setTestState('testing');
+    setTimeout(() => setTestState(Math.random() > 0.2 ? 'success' : 'error'), 1500);
+  };
+
+  const handleSave = () => {
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2500);
+  };
+
+  const inputStyle = {
+    flex: 1, background: 'var(--bg-secondary)', border: '1px solid var(--border)',
+    borderRadius: 6, padding: '7px 11px', color: 'var(--text)',
+    fontFamily: 'var(--font-mono)', fontSize: 11, outline: 'none',
+  };
+  const labelStyle = { fontSize: 11, color: 'var(--text-muted)', width: 160, flexShrink: 0 };
+  const rowStyle = { display: 'flex', alignItems: 'center', gap: 10, padding: '10px 0', borderBottom: '1px solid var(--border)' };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <Card>
+        <SectionHeader
+          title="AI Model Config"
+          subtitle="Configure AI/ML endpoints and model parameters"
+          action={
+            <button
+              onClick={handleSave}
+              style={{
+                padding: '6px 14px', borderRadius: 6, fontSize: 12, fontWeight: 700,
+                fontFamily: 'var(--font-sans)', cursor: 'pointer',
+                background: saved ? 'rgba(50,200,110,0.15)' : 'rgba(50,200,110,0.1)',
+                color: 'var(--green)', border: '1px solid rgba(50,200,110,0.25)',
+              }}
+            >
+              {saved ? '✓ Saved' : 'Save Configuration'}
+            </button>
+          }
+        />
+        <div style={{ padding: '16px 20px' }}>
+          {/* NLP Model Endpoint */}
+          <div style={rowStyle}>
+            <div style={labelStyle}>NLP Model Endpoint</div>
+            <input
+              style={inputStyle}
+              type="text"
+              placeholder="https://api.zealogics.com/nlp/v2"
+              value={cfg.nlpEndpoint}
+              onChange={e => setCfg(p => ({ ...p, nlpEndpoint: e.target.value }))}
+            />
+            <button
+              onClick={handleTestConnection}
+              disabled={testState === 'testing'}
+              style={{
+                padding: '5px 12px', borderRadius: 6, fontSize: 11, fontWeight: 600,
+                fontFamily: 'var(--font-sans)', cursor: testState === 'testing' ? 'wait' : 'pointer', flexShrink: 0,
+                background: testState === 'success' ? 'rgba(50,200,110,0.1)' : testState === 'error' ? 'rgba(255,50,50,0.1)' : 'rgba(50,110,255,0.1)',
+                color: testState === 'success' ? 'var(--green)' : testState === 'error' ? 'var(--red)' : 'var(--blue)',
+                border: `1px solid ${testState === 'success' ? 'rgba(50,200,110,0.25)' : testState === 'error' ? 'rgba(255,50,50,0.25)' : 'rgba(50,110,255,0.25)'}`,
+              }}
+            >
+              {testState === 'testing' ? 'Testing…' : testState === 'success' ? '✓ Connected' : testState === 'error' ? '✗ Failed' : 'Test Connection'}
+            </button>
+          </div>
+
+          {/* API Key */}
+          <div style={rowStyle}>
+            <div style={labelStyle}>API Key</div>
+            <input
+              style={{ ...inputStyle, letterSpacing: showKey ? 'normal' : '3px', color: showKey ? 'var(--text)' : 'var(--text-muted)' }}
+              type={showKey ? 'text' : 'password'}
+              value={cfg.apiKey}
+              onChange={e => setCfg(p => ({ ...p, apiKey: e.target.value }))}
+            />
+            <button
+              onClick={() => setShowKey(s => !s)}
+              style={{
+                padding: '5px 10px', borderRadius: 6, fontSize: 11, fontWeight: 600,
+                fontFamily: 'var(--font-sans)', cursor: 'pointer', flexShrink: 0,
+                background: 'var(--bg-secondary)', color: 'var(--text-muted)', border: '1px solid var(--border)',
+              }}
+            >
+              {showKey ? 'Hide' : 'Show'}
+            </button>
+          </div>
+
+          {/* Model Version */}
+          <div style={rowStyle}>
+            <div style={labelStyle}>Model Version</div>
+            <select
+              value={cfg.modelVersion}
+              onChange={e => setCfg(p => ({ ...p, modelVersion: e.target.value }))}
+              style={{ ...inputStyle, fontFamily: 'var(--font-sans)', cursor: 'pointer' }}
+            >
+              <option value="gpt-4o">GPT-4o</option>
+              <option value="claude-3-opus">Claude 3 Opus</option>
+              <option value="llama-3.1">Local Llama 3.1</option>
+              <option value="steeliq-ft">Fine-tuned SteelIQ</option>
+            </select>
+          </div>
+
+          {/* Max Tokens */}
+          <div style={rowStyle}>
+            <div style={labelStyle}>Max Tokens</div>
+            <input
+              style={inputStyle}
+              type="number"
+              value={cfg.maxTokens}
+              min={256} max={8192}
+              onChange={e => setCfg(p => ({ ...p, maxTokens: Number(e.target.value) }))}
+            />
+          </div>
+
+          {/* Temperature */}
+          <div style={{ ...rowStyle, borderBottom: 'none' }}>
+            <div style={labelStyle}>Temperature</div>
+            <input
+              type="range" min={0} max={1} step={0.05}
+              value={cfg.temperature}
+              onChange={e => setCfg(p => ({ ...p, temperature: Number(e.target.value) }))}
+              style={{ flex: 1 }}
+            />
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 600, width: 36, textAlign: 'right', flexShrink: 0 }}>
+              {cfg.temperature.toFixed(2)}
+            </span>
+          </div>
+        </div>
+      </Card>
+
+      {/* Inference log panel */}
+      <Card>
+        <SectionHeader title="Recent Inference Log" subtitle="Last 5 inference calls" />
+        <div style={{ padding: '4px 0' }}>
+          {MOCK_INFERENCES.map((entry, i) => (
+            <div key={i} style={{
+              display: 'flex', alignItems: 'center', gap: 12,
+              padding: '9px 20px', borderBottom: i < MOCK_INFERENCES.length - 1 ? '1px solid var(--border)' : 'none',
+              fontFamily: 'var(--font-mono)', fontSize: 11,
+            }}>
+              <span style={{ color: 'var(--text-muted)', opacity: 0.6, flexShrink: 0 }}>{entry.ts}</span>
+              <span style={{ color: 'var(--text-secondary)', flex: 1 }}>{entry.model}</span>
+              <span style={{ color: 'var(--text-muted)' }}>{entry.tokens} tok</span>
+              <span style={{
+                padding: '1px 6px', borderRadius: 3, fontSize: 9, fontWeight: 700,
+                background: entry.status === 'ok' ? 'rgba(50,200,110,0.1)' : 'rgba(255,165,40,0.1)',
+                color: entry.status === 'ok' ? 'var(--green)' : 'var(--amber)',
+              }}>
+                {entry.latency}
+              </span>
+            </div>
+          ))}
+        </div>
+      </Card>
+    </div>
   );
 }
 
@@ -502,7 +882,7 @@ export default function AdminPage() {
   };
 
   return (
-    <div style={{ fontFamily: 'var(--font-sans)' }}>
+    <div style={{ fontFamily: 'var(--font-sans)', padding: '20px 24px', maxWidth: '1400px', margin: '0 auto' }}>
       {/* Page header */}
       <div style={{ marginBottom: 24 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
