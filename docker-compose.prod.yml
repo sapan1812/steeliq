@@ -1,0 +1,45 @@
+version: "3.9"
+
+# Production overrides — run with:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# Copy .env.example → .env and fill in real secrets before deploying.
+
+services:
+  db:
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    # No port exposure in production — only accessible on the internal network
+    ports: !reset []
+    restart: always
+
+  backend:
+    # Use the baked image; no source volume mount in production
+    volumes: !reset []
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      SECRET_KEY: ${SECRET_KEY}
+      ALGORITHM: ${ALGORITHM:-HS256}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-480}
+      REFRESH_TOKEN_EXPIRE_DAYS: ${REFRESH_TOKEN_EXPIRE_DAYS:-7}
+      CORS_ORIGINS: ${CORS_ORIGINS}
+      ENVIRONMENT: production
+    # Reload flag must be dropped for production
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
+    restart: always
+    labels:
+      - "traefik.enable=false"
+
+  frontend:
+    ports:
+      - "80:80"
+    environment:
+      VITE_API_URL: ${VITE_API_URL}
+    restart: always
+    labels:
+      # Traefik / nginx-proxy reverse-proxy labels (adjust host to your domain)
+      - "traefik.enable=true"
+      - "traefik.http.routers.steeliq.rule=Host(`steeliq.zealogics.info`)"
+      - "traefik.http.routers.steeliq.entrypoints=websecure"
+      - "traefik.http.routers.steeliq.tls.certresolver=letsencrypt"
+      - "traefik.http.services.steeliq.loadbalancer.server.port=80"
